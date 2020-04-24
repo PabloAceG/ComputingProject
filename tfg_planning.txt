@@ -1,0 +1,15 @@
+Simplificar:
+Usar metricas de complejidad para ver si están correlacionadas con el balanceo (resultado de clasificación con el balanceo)
+Sacar métricas de complejidad y ver como están relacionadas
+A mayor overlapping peor clasifica
+
+
+Extensión:
+Por donde generar los datos para minimizar el overlapping
+
+
+Invalance-Learn - Python -> Métricas desbalanceadas
+DCol - C++ -> Mide medidas de complejidad
+Reticulate - R -> Ejecutar Python en R
+
+Mandar correo mario: librería de Python
