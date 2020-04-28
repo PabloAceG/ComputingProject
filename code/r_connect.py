@@ -48,57 +48,63 @@ class r_connect:
             
             ## Metrics, uses a dictionary to provide a faster access to its 
             # contents.
-            metrics = []
+            metrics = {}
 
             # Balance
-            balance = connect.r('balance(df_X, df_y)') 
-            for i in range(len(balance)):
-                metrics.append(balance[i])
+            balance = self.safe_connect('balance(df_X, df_y)') 
             message = '# Balance (C1, C2):\t'
-            balance_dic_entry = {'balance' : [message, balance] }
-            print(message, balance)
+            balance_dic_entry = { 'balance' : [message, balance] }
+            
+            metrics.update (balance_dic_entry)
 
             # Correlation
-            correlation = connect.r('correlation(df_X, df_y)')
-            for i in range(len(correlation)):
-                metrics.append(correlation[i])
-            print('# Correlation (C1, C2, C3, C4):\t', correlation)
+            correlation = self.safe_connect('correlation(df_X, df_y)')
+            message = '# Correlation (C1, C2, C3, C4):\t'
+            correlation_dic_entry = { 'correlation' : [message, correlation] } 
+
+            metrics.update (correlation_dic_entry)
 
             # Dimensionality
-            dimensionality = connect.r('dimensionality(df_X, df_y)')
-            for i in range(len(dimensionality)):
-                metrics.append(dimensionality[i])
-            print('# Dimensionality (T2, T3, T4):', dimensionality)
+            dimensionality = self.safe_connect('dimensionality(df_X, df_y)')
+            message = '# Dimensionality (T2, T3, T4):'
+            dimensionality_dic_entry = { 'dimensionality' : [message, dimensionality] }
+
+            metrics.update (dimensionality_dic_entry)
 
             # Linearity
-            linearity = connect.r('linearity.class(df_X, df_y)')
-            for i in range(len(linearity)):
-                metrics.append(linearity[i])
-            print('# Linearity (L1, L2, L3):\t', linearity)
+            linearity = self.safe_connect('linearity(df_X, df_y)')
+            message = '# Linearity (L1, L2, L3):\t'
+            linearity_dic_entry = { 'linearity' : [message, linearity] }
+
+            metrics.update (linearity_dic_entry)
 
             # Neighborhood
-            neighborhood = connect.r('neighborhood(df_X, df_y)')
-            for i in range(len(neighborhood)):
-                metrics.append(neighborhood[i])
-            print('# Neighborhood (N1, N2, N3, N4, T1, LSC):\t', neighborhood)
+            neighborhood = self.safe_connect('neighborhood(df_X, df_y)')
+            message = '# Neighborhood (N1, N2, N3, N4, T1, LSC):\t'
+            neighborhood_dic_entry = { 'neighborhood' : [message, neighborhood] }
+
+            metrics.update (neighborhood_dic_entry)
 
             # Network
-            network = connect.r('network(df_X, df_y)')
-            for i in range(len(network)):
-                metrics.append(network[i])
-            print('# Network (Density, ClsCoef, Hubs):\t', network)
+            network = self.safe_connect('network(df_X, df_y)')
+            message = '# Network (Density, ClsCoef, Hubs):\t'
+            network_dic_entry = { 'network' : [message, network] }
+
+            metrics.update (network_dic_entry)
 
             # Overlap
-            overlap = connect.r('overlapping(df_X, df_y)')
-            for i in range(len(overlap)):
-                metrics.append(overlap[i])
-            print('# Overlap (F1, F1v, F2, F3, F4):\t', overlap)
+            overlap = self.safe_connect('overlapping(df_X, df_y)')
+            message = '# Overlap (F1, F1v, F2, F3, F4):\t'
+            overlap_dic_entry = { 'overlap' : [message, overlap] }
+
+            metrics.update (overlap_dic_entry)
 
             # Smoothness
-            smoothness = connect.r('smoothness(df_X, df_y)')
-            for i in range(len(smoothness)):
-                metrics.append(smoothness[i])
-            print('# Smoothness (S1, S2, S3, S4):\t', smoothness)
+            smoothness = self.safe_connect('smoothness(df_X, df_y)')
+            message = '# Smoothness (S1, S2, S3, S4):\t'
+            smoothness_dic_entry = { 'smoothness' : [message, smoothness] }
+
+            metrics.update (smoothness_dic_entry)
             
             self.__metrics = metrics
 
@@ -108,6 +114,9 @@ class r_connect:
         Print the metrics previously calculated.
     '''
     def print_metrics (self, metrics=None) :
+
+        print ('\n\n=== Printing metrics ===', end='\n\n')
+
         if metrics is None:
             if self.__metrics is not None : 
                 metrics = self.__metrics
@@ -119,20 +128,42 @@ class r_connect:
                 '''
                 raise Exception (error_message)
                 sys.exit (400)
-
-        for m in metrics :
-            print(m)
-
+        
+        # Positions within the components of the dictionart
+        header  = 0
+        results = 1
+                
+        # In dictionary
+        # Name = Key
+        # Components = Values
+        for name, components in metrics.items() :
+            print(components[header], components[results])
 
     '''
         Both calculates the metrics and prints them along with a few some
         debug messages.
     '''
     def get_print_metrics(self, X, Y):
-        print ('Calculating metrics for the specified dataset.', end='\n')
+        print ('\n\n=== Calculating metrics for the specified dataset ===', end='\n\n')
+        
         # Obtain metrics back
         self.get_metrics (X, Y)
-        print ('Metrics calculated, starting to print.', end='\n')
+        print ('\n\n=== Metrics calculated, starting to print ===', end='\n')
 
         # Print results
         self.print_metrics (self.__metrics)
+
+    '''
+        Perform a safe connection to R, with error treatment.
+    '''
+    def safe_connect(self, operation) :
+        connection = self.__connection
+
+        try:
+            metric = connection.r(operation)
+        except :
+            metric = None
+            print ('Could not retrieve {}!'.format (operation) )
+        finally :
+            return metric
+        
