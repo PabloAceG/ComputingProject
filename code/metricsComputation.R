@@ -1,21 +1,24 @@
 # Libraries
 library(ECoL)
 
-# Load the dataset to be used
-apache <- read.table("C:/Users/Pablo/Documents/Git/DASE/datasets/defectPred/BugCatchers/Apache.csv",
-                     header = TRUE,
-                     sep = ",",
-                     row.names = 1)
+#data("iris")
 
-lastColNumber <- ncol(apache)
-lastRowNumber <- nrow(apache)
+# Load the dataset to be used
+irisorio <- read.table("C:/Users/Pablo/Documents/Git/ComputingProject/dataset/iris.csv",
+                     header = TRUE,
+                     sep = ",")
+
+#lastColNumber <- ncol(apache)
+#astRowNumber <- nrow(apache)
 
 
 # Data related to the Apache code.
-bugsApacheData <- apache[, 3 : lastColNumber - 1 ]
+#bugsApacheData <- apache[, 3 : lastColNumber - 1 ]
 # Number of faults.
-numFaultsApache <-apache[, lastColNumber ]
+#numFaultsApache <-apache[, lastColNumber ]
 
+iris_input <- irisorio[, 1 : 4]
+iris_target <- irisorio[, 5]
 
 # Measures
-overlapping(bugsApacheData, numFaultsApache)
+overlapping(iris_input, iris_target)

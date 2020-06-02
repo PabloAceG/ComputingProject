@@ -5,13 +5,13 @@ import numpy
 import csv
 
 # Global variables
-dataset_path = './dataset/iris.csv'
-dataset = []
+DATASET_PATH = './dataset/iris.csv'
+DATASET = []
 
 '''
     Load Dataset data into an array 
 '''
-with open (dataset_path, 'r') as csv_file:
+with open (DATASET_PATH, 'r') as csv_file:
     # Skip header
     next (csv_file)
     # Interator object to read the CSV
@@ -22,12 +22,12 @@ with open (dataset_path, 'r') as csv_file:
     )
     # Create array from CSV
     for row in csv_reader :
-        dataset.append (row)
+        DATASET.append (row)
 
 def parse_dataset () : 
     ## Data
     # Input 
-    X = numpy.array (dataset) # Transformed to numpy array to allow more 
+    X = numpy.array (DATASET) # Transformed to numpy array to allow more 
     X = X[:, 0 : -1]          # operations on it.
     X = numpy.array ( [ 
         numpy.array (row).astype (numpy.float) 
@@ -35,7 +35,7 @@ def parse_dataset () :
     ] )
     # Target
     Y = numpy.array( [
-        row[-1] for row in dataset
+        row[-1] for row in DATASET
     ] )
 
     return X, Y
