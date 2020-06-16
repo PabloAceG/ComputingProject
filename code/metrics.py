@@ -34,8 +34,9 @@ def parse_dataset () :
         for row in X 
     ] )
     # Target
+    targets = {'setosa': 1, 'versicolor': 2, 'virginica': 3} 
     Y = numpy.array( [
-        row[-1] for row in DATASET
+        targets[row[-1]] for row in DATASET
     ] )
 
     return X, Y
@@ -46,18 +47,6 @@ def parse_dataset () :
 if __name__ == '__main__':
     #Data
     inputs, target = parse_dataset ()
-
-    # R does not take string values. So each class is translated into a 
-    # numerical value.
-    for row in range (len(target)) :
-        if target[row] == 'setosa' :
-            target[row] = 1
-        elif target[row] == 'versicolor' :
-            target[row] = 2
-        elif target[row] == 'virginica' :
-            target[row] = 3
-        else :
-            target[row] = 0
     
     # Connect to R
     connector = r_connect()
