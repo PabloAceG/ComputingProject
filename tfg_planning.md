@@ -15,7 +15,7 @@ balanceo (resultado de clasificación con el balanceo).
 4.
 - Mandar correo mario: librería de Python
 
-===============================================================================
+---
 
 29/04/20
 
@@ -33,7 +33,7 @@ balanceo (resultado de clasificación con el balanceo).
 3.
 - !!! Usar Jupiter
 
-===============================================================================
+---
 
 02/02/20
 
@@ -42,7 +42,7 @@ balanceo (resultado de clasificación con el balanceo).
 
 https://github.com/jonathanSS/ImbalanceDegree
 
-===============================================================================
+---
 
 10/06/200
 
@@ -65,4 +65,23 @@ https://github.com/jonathanSS/ImbalanceDegree
 	  - https://github.com/Riteshgoenka/SoftwareDefectPrediction
 	  - Con un proyecto intentar predecir otros defectos en otro proyecto
 	  - https://www.overleaf.com/project/5db2b65ed0080f0001019a29
+
+---
+
+8/7/2020
+
+- Project proposal
+  - Use the project proposal from Brookes
+  - Sign paperwork
+    - Anexo 3 ... Anteproyecto
+    - https://escuelapolitecnica.uah.es/estudiantes/trabajo-fin-grado.asp
+      - Fill in and sign page 17
+- Read .arff classes
+  - Must have binary target (yes or no)
+    - O transform it: 
+      - == 0 -> No
+      - > 0 -> Yes
+  - Delete string columns (no need of class, version, etc)
+    - They all have either same values or different values (also useless)
+- Use Ritesh final project to know how to read files
 	  
