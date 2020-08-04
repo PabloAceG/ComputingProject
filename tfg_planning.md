@@ -84,4 +84,7 @@ https://github.com/jonathanSS/ImbalanceDegree
   - Delete string columns (no need of class, version, etc)
     - They all have either same values or different values (also useless)
 - Use Ritesh final project to know how to read files
-	  
+
+29/7/2020
+- Matplotlib para representar and compare results
+- kfold see when success rate drops for chunk what relation there is with the metrics

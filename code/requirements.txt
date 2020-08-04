@@ -4,3 +4,4 @@ numpy
 python-csv
 pandas
 liac-arff
+matplotlib

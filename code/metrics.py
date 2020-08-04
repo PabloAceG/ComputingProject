@@ -4,17 +4,17 @@ from numpy     import matrix
 import data as DATASETS
 import numpy
 
-'''
-    Main code - to be executed
-'''
 if __name__ == '__main__':
+    '''
+        Main code - to be executed
+    '''
     #Data
     inputs, target = DATASETS.get_dataset('iris')
     
     # Connect to R
     connector = r_connect()
     # Compute and print metrics for dataset
-    connector.get_print_metrics(inputs, target)
+    metrics = connector.get_metrics(inputs, target)
 
     # TODO: Look at
     # https://scikit-learn.org/stable/auto_examples/datasets/plot_iris_dataset.html

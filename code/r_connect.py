@@ -50,52 +50,44 @@ class r_connect:
             # contents.
             metrics = {}
 
-            # Balance
+            # Balance: C1, C2
             balance = self.safe_connect('balance(df_X, df_y)') 
-            message = '# Balance (C1, C2):\t'
-            balance_dic_entry = { 'balance' : [message, balance] }
+            balance_dic_entry = { 'balance' :  balance }
             metrics.update (balance_dic_entry)
 
-            # Correlation
-            correlation = self.safe_connect('correlation(df_X, df_y)')
-            message = '# Correlation (C1, C2, C3, C4):\t'
-            correlation_dic_entry = { 'correlation' : [message, correlation] } 
+            # Correlation: C1, C2, C3, C4
+            correlation = self.safe_connect('correlation(df_X, df_y)') 
+            correlation_dic_entry = { 'correlation' : correlation } 
             metrics.update (correlation_dic_entry)
 
-            # Dimensionality
-            dimensionality = self.safe_connect('dimensionality(df_X, df_y)')
-            message = '# Dimensionality (T2, T3, T4):'
-            dimensionality_dic_entry = { 'dimensionality' : [message, dimensionality] }
+            # Dimensionality: T2, T3, T4
+            dimensionality = self.safe_connect('dimensionality(df_X, df_y)') 
+            dimensionality_dic_entry = { 'dimensionality' : dimensionality }
             metrics.update (dimensionality_dic_entry)
 
-            # Linearity
-            linearity = self.safe_connect('linearity(df_X, df_y)')
-            message = '# Linearity (L1, L2, L3):\t'
-            linearity_dic_entry = { 'linearity' : [message, linearity] }
+            # Linearity: L1, L2, L3
+            linearity = self.safe_connect('linearity(df_X, df_y)') 
+            linearity_dic_entry = { 'linearity' : linearity }
             metrics.update (linearity_dic_entry)
 
-            # Neighborhood
-            neighborhood = self.safe_connect('neighborhood(df_X, df_y)')
-            message = '# Neighborhood (N1, N2, N3, N4, T1, LSC):\t'
-            neighborhood_dic_entry = { 'neighborhood' : [message, neighborhood] }
+            # Neighborhood: N1, N2, N3, N4, T1, LSC
+            neighborhood = self.safe_connect('neighborhood(df_X, df_y)') 
+            neighborhood_dic_entry = { 'neighborhood' : neighborhood }
             metrics.update (neighborhood_dic_entry)
 
-            # Network
-            network = self.safe_connect('network(df_X, df_y)')
-            message = '# Network (Density, ClsCoef, Hubs):\t'
-            network_dic_entry = { 'network' : [message, network] }
+            # Network: Density, ClsCoef, Hubs
+            network = self.safe_connect('network(df_X, df_y)') 
+            network_dic_entry = { 'network' : network }
             metrics.update (network_dic_entry)
 
-            # Overlap
-            overlap = self.safe_connect('overlapping(df_X, df_y)')
-            message = '# Overlap (F1, F1v, F2, F3, F4):\t'
-            overlap_dic_entry = { 'overlap' : [message, overlap] }
+            # Overlap: F1, F1v, F2, F3, F4
+            overlap = self.safe_connect('overlapping(df_X, df_y)') 
+            overlap_dic_entry = { 'overlap' : overlap }
             metrics.update (overlap_dic_entry)
 
-            # Smoothness
-            smoothness = self.safe_connect('smoothness(df_X, df_y)')
-            message = '# Smoothness (S1, S2, S3, S4):\t'
-            smoothness_dic_entry = { 'smoothness' : [message, smoothness] }
+            # Smoothness: S1, S2, S3, S4
+            smoothness = self.safe_connect('smoothness(df_X, df_y)') 
+            smoothness_dic_entry = { 'smoothness' : smoothness }
             metrics.update (smoothness_dic_entry)
             
             self.__metrics = metrics
@@ -129,7 +121,7 @@ class r_connect:
         # Name = Key
         # Components = Values
         for name, components in metrics.items() :
-            print(components[header], components[results])
+            print(metrics[name])
 
     '''
         Both calculates the metrics and prints them along with a few some
