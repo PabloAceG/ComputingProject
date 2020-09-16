@@ -16,6 +16,8 @@ if __name__ == '__main__':
     # Compute and print metrics for dataset
     metrics = connector.get_metrics(inputs, target)
 
+    print(metrics)
+
     # TODO: Look at
     # https://scikit-learn.org/stable/auto_examples/datasets/plot_iris_dataset.html
  

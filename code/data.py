@@ -3,6 +3,8 @@ import arff
 import csv
 import numpy
 import sys
+import random
+import math
 import pandas as pd
 
 def __load_arff(path):
@@ -72,7 +74,7 @@ def __parte_dataset(dataset, start):
 
     return input, target
 
-def __data_preparation(path, start, type='arff'):
+def __data_preparation(path, start, type='arff', shuffle=False):
     '''
         Loads an .arff/.csv file and parses its content to input/output valid 
         for a Machine Learning application.
@@ -98,6 +100,9 @@ def __data_preparation(path, start, type='arff'):
         raise Exception('Not a valid file type. Try with arff or csv!')
         sys.exit(404)
     dataset = pd.DataFrame(dataset)
+
+    if shuffle:
+        dataset = dataset.sample(frac=1)
     
     # Parse data
     data = (dataset, start)
@@ -133,7 +138,7 @@ def __data_preparation_iris_dataset(path):
 
     return input, target
 
-def get_dataset(name):
+def get_dataset(name, shuffle=False):
     '''
         Retrieves the data of a given dataset, separated into input information
         and target output - .arff or .csv files only.
@@ -179,7 +184,7 @@ def get_dataset(name):
                          # treatment.
         # Retrieve data
         path = './dataset/iris.csv'
-        input, target = __data_preparation_iris_dataset(path)
+        input, target = __data_preparation_iris_dataset(path, shuffle)
 
         return input, target
 
@@ -223,6 +228,104 @@ def get_dataset(name):
         sys.exit(404)
     
     # Return results
-    input, target = __data_preparation(path, start, type)
+    input, target = __data_preparation(path, start, type, shuffle)
 
     return input, target
+
+def confusion_matrix(x_test: list, y_test: list, classifier):
+    '''
+        Obtains the confusion matrix for a given testing dataset, with binary
+        output.
+        Input:
+            - x_test: paremeters for testing dataset.
+            - y_test: target/desired output for testing dataset.
+            - classifier: trained classifier.
+        Output:
+            (
+                true_positive: successfully predicted positives
+                true_negative: successfully predicted negatives
+                false_positive: unsuccessfully predicted positives
+                false_negative: unsuccessfully predicted positives
+            )
+    '''
+    # Confusion Matrix Cells
+    true_positive:float  = 0
+    true_negative:float  = 0
+    false_positive:float = 0
+    false_negative:float = 0
+
+    # Calculate number of repetitions of each classification. 
+    for (input, target) in zip(x_test, y_test):
+        prediction:int = classifier.predict([input])[0]
+
+        if prediction == target:    # Success
+            if prediction: true_positive += 1
+            else:          true_negative += 1
+        else:                       # Wrong
+            if prediction: false_positive += 1
+            else:          false_negative += 1
+    
+    # Transform absolute to relative values
+    num_samples = len(y_test)
+    true_positive  = true_positive  / num_samples
+    true_negative  = true_negative  / num_samples
+    false_positive = false_positive / num_samples
+    false_negative = false_negative / num_samples
+
+    return (true_positive, true_negative, false_positive, false_negative)
+
+def recall(tp: float, fn: float) -> float:
+    '''
+        Sensitivity, recall, hit rate or True Positive Rate (RPR)
+               TP       TP
+        TPR = ---- = --------- = 1 - FNR
+               P      TP + FN
+    '''
+    return tp / (tp + fn)
+
+def precision(tp: float, fp: float) -> float:
+    '''
+        Precision or positive predictive value (PPV).
+                 TP
+        PPV = --------- = 1 - FDR
+               TP + FP
+        Inputs:
+            - tp (float): True Positives
+            - tn (float): True Negatives
+            - fp (float): False Positives
+            - fn (float): False Negatives
+        Returns:
+            - MCC (float)
+    '''
+    return tp / (tp + fp)
+
+def f1_score(tp: float, fp: float, fn: float) -> float:
+    '''
+        F1 Score. Is the harmonic mean of precision and sensitivity.
+                PPV x TPR         2 TP
+        F1 = 2 ----------- = ----------------
+                PPV + TPR     2 TP + FP + FN
+        Inputs:
+            - tp (float): True Positives
+            - fp (float): False Positives
+            - fn (float): False Negatives
+        Returns:
+            - F1 (float)
+    '''
+    return (2 * tp) / ((2 * tp) + fp + fn)
+
+def mcc(tp: float, tn: float, fp: float, fn: float) -> float:
+    '''
+        Matthews Correlation Coefficient (MCC).
+                          TP x TN - FP x FN
+        MCC = --------------------------------------------
+               sqrt((TP + FP)(TP + FN)(TN + FP)(TN + FN))
+        Inputs:
+            - tp (float): True Positives
+            - tn (float): True Negatives
+            - fp (float): False Positives
+            - fn (float): False Negatives
+        Returns:
+            - MCC (float)
+    '''
+    return ((tp * tn) - (fp * fn)) / math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
