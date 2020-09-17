@@ -41,8 +41,8 @@ if __name__ == '__main__':
         print("mcc: "       + str(DATASETS.mcc(true_positive, true_negative, false_positive, false_negative)))
 
         # Compute and print metrics for dataset
-        #measures[pos] = connector.get_metrics(x_train, y_train)
-        #pos += 1
+        measures[pos] = connector.get_metrics(x_train, y_train)
+        pos += 1
 
     # Measure from the whole dataset
-    #final_measure = connector.get_metrics(inputs, target)
+    final_measure = connector.get_metrics(inputs, target)
