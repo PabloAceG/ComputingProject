@@ -283,6 +283,15 @@ def recall(tp: float, fn: float) -> float:
     '''
     return tp / (tp + fn)
 
+def fall_out(fp:float, tn: float) -> float:
+    '''
+        Fallout, or False Positive Rate (FPR)
+               FP       FP
+        FPR = ---- = --------- = 1 - TNR
+               N      FP + TN
+    '''
+    return fp / (fp + tn)
+
 def precision(tp: float, fp: float) -> float:
     '''
         Precision or positive predictive value (PPV).
@@ -329,3 +338,16 @@ def mcc(tp: float, tn: float, fp: float, fn: float) -> float:
             - MCC (float)
     '''
     return ((tp * tn) - (fp * fn)) / math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
+
+def auc(tp: float, tn: float, fp:float, fn: float) -> float:
+    '''
+        Area Under Receiver Operating Characteristic Curve, 
+        Area Under ROC Curve or AUC.
+               1 + TPR - FPR
+        AUC = ---------------
+                    2
+    '''
+    tpr: float = recall(tp, fn)
+    fpr: float = fall_out(fp, tn)
+
+    return (1 + tpr - fpr) / 2

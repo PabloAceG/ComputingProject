@@ -47,8 +47,10 @@ if __name__ == '__main__':
         print((true_positive, true_negative, false_positive, false_negative))
         print("precision: " + str(DATASETS.precision(true_positive, false_positive)))
         print("recall: "    + str(DATASETS.recall(true_positive, false_negative)))
+        print("fall_out: "  + str(DATASETS.fall_out(false_positive, true_negative)))
         print("f1: "        + str(DATASETS.f1_score(true_positive, false_positive, false_negative)))
         print("mcc: "       + str(DATASETS.mcc(true_positive, true_negative, false_positive, false_negative)))
+        print("auc: "       + str(DATASETS.auc(true_positive, true_negative, false_positive, false_negative)))
 
         # Compute and print metrics for dataset
         measures[pos] = connector.get_metrics(x_train, y_train)
