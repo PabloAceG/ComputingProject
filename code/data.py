@@ -1,4 +1,5 @@
-from numpy import matrix
+from sklearn import metrics
+from numpy   import matrix
 import arff
 import csv
 import numpy
@@ -274,80 +275,92 @@ def confusion_matrix(x_test: list, y_test: list, classifier):
 
     return (true_positive, true_negative, false_positive, false_negative)
 
-def recall(tp: float, fn: float) -> float:
+def recall(targets, predictions) -> float:
     '''
         Sensitivity, recall, hit rate or True Positive Rate (RPR)
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html
                TP       TP
         TPR = ---- = --------- = 1 - FNR
                P      TP + FN
     '''
-    return tp / (tp + fn)
+    return round(metrics.recall_score(targets, predictions), 4)
 
-def fall_out(fp:float, tn: float) -> float:
+def fall_out(targets, predictions) -> float:
     '''
         Fallout, or False Positive Rate (FPR)
                FP       FP
         FPR = ---- = --------- = 1 - TNR
                N      FP + TN
     '''
-    return fp / (fp + tn)
+    # Calculate TN and FP rates
+    num_items:int = len(targets)
+    false_positive:float = 0
+    true_negative: float = 0
+    # Count
+    for (t, o) in zip(targets, predictions):
+        if (o == t and o == 0):
+            true_negative  += 1
+        if (o != t and o == 1):
+            false_positive += 1
+    # Rates
+    true_negative  /= num_items
+    false_positive /= num_items
 
-def precision(tp: float, fp: float) -> float:
+    # False Positive Rate
+    fdr:float = false_positive / (false_positive + true_negative)
+    return round(fdr, 4)
+
+def precision(targets, predictions) -> float:
     '''
         Precision or positive predictive value (PPV).
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html
                  TP
         PPV = --------- = 1 - FDR
                TP + FP
-        Inputs:
-            - tp (float): True Positives
-            - tn (float): True Negatives
-            - fp (float): False Positives
-            - fn (float): False Negatives
-        Returns:
-            - MCC (float)
     '''
-    return tp / (tp + fp)
+    return round(metrics.precision_score(targets, predictions), 4)
 
-def f1_score(tp: float, fp: float, fn: float) -> float:
+def balanced(targets, predictions) -> float:
+    '''
+        Balanced Accuracy (BA)
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html#sklearn.metrics.balanced_accuracy_score
+              TPR + TNR
+        BA = -----------
+                  2
+    '''
+
+    return round(metrics.balanced_accuracy_score(targets, predictions), 4)
+
+def f1(targets, predictions) -> float:
     '''
         F1 Score. Is the harmonic mean of precision and sensitivity.
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
                 PPV x TPR         2 TP
         F1 = 2 ----------- = ----------------
                 PPV + TPR     2 TP + FP + FN
-        Inputs:
-            - tp (float): True Positives
-            - fp (float): False Positives
-            - fn (float): False Negatives
-        Returns:
-            - F1 (float)
     '''
-    return (2 * tp) / ((2 * tp) + fp + fn)
+    return round(metrics.f1_score(targets, predictions), 4)
 
-def mcc(tp: float, tn: float, fp: float, fn: float) -> float:
+def mcc(targets, predictions) -> float:
     '''
         Matthews Correlation Coefficient (MCC).
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html
                           TP x TN - FP x FN
         MCC = --------------------------------------------
                sqrt((TP + FP)(TP + FN)(TN + FP)(TN + FN))
-        Inputs:
-            - tp (float): True Positives
-            - tn (float): True Negatives
-            - fp (float): False Positives
-            - fn (float): False Negatives
-        Returns:
-            - MCC (float)
     '''
-    return ((tp * tn) - (fp * fn)) / math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
+    return round(metrics.matthews_corrcoef(targets, predictions), 4)
 
-def auc(tp: float, tn: float, fp:float, fn: float) -> float:
+def auc(targets, predictions) -> float:
     '''
         Area Under Receiver Operating Characteristic Curve, 
         Area Under ROC Curve or AUC.
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html
                1 + TPR - FPR
         AUC = ---------------
                     2
     '''
-    tpr: float = recall(tp, fn)
-    fpr: float = fall_out(fp, tn)
+    fpr, tpr, thresholds = metrics.roc_curve(targets, predictions)
 
-    return (1 + tpr - fpr) / 2
+    return round(metrics.auc(fpr, tpr), 4)

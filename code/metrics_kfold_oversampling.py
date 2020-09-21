@@ -43,14 +43,15 @@ if __name__ == '__main__':
         # Train NN
         clf.fit(x_train, y_train)
         # Test NN and get confusion matrix
-        (true_positive, true_negative, false_positive, false_negative) = DATASETS.confusion_matrix(x_test, y_test, clf)
-        print((true_positive, true_negative, false_positive, false_negative))
-        print("precision: " + str(DATASETS.precision(true_positive, false_positive)))
-        print("recall: "    + str(DATASETS.recall(true_positive, false_negative)))
-        print("fall_out: "  + str(DATASETS.fall_out(false_positive, true_negative)))
-        print("f1: "        + str(DATASETS.f1_score(true_positive, false_positive, false_negative)))
-        print("mcc: "       + str(DATASETS.mcc(true_positive, true_negative, false_positive, false_negative)))
-        print("auc: "       + str(DATASETS.auc(true_positive, true_negative, false_positive, false_negative)))
+        predictions = clf.predict(x_test)
+        print(DATASETS.confusion_matrix(x_test, y_test, clf))
+        print("precision: " + str(DATASETS.precision(y_test, predictions)))
+        print("recall: "    + str(DATASETS.recall   (y_test, predictions)))
+        print("fall_out: "  + str(DATASETS.fall_out (y_test, predictions)))
+        print("balanced: "  + str(DATASETS.balanced (y_test, predictions)))
+        print("f1: "        + str(DATASETS.f1       (y_test, predictions)))
+        print("mcc: "       + str(DATASETS.mcc      (y_test, predictions)))
+        print("auc: "       + str(DATASETS.auc      (y_test, predictions)))
 
         # Compute and print metrics for dataset
         measures[pos] = connector.get_metrics(x_train, y_train)
