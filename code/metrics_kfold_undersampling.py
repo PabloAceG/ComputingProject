@@ -1,35 +1,27 @@
 # Libraries
 from sklearn.model_selection import KFold
 from sklearn.naive_bayes     import GaussianNB
+from sklearn.tree            import DecisionTreeClassifier
+from sklearn.neighbors       import NearestCentroid
 
 from imblearn.datasets       import make_imbalance
 from imblearn.under_sampling import NearMiss
 from imblearn.pipeline       import make_pipeline
 
-from r_connect               import r_connect
-
+from r_connect import r_connect
 import data as DATASETS
-import numpy
-import math
 
 if __name__ == '__main__':
     # Data
-    # ant dataset resolves with 0 for the false negatives
-    inputs, target = DATASETS.get_dataset('apache', True)
+    dataset = 'apache'
+    inputs, target = DATASETS.get_dataset(dataset)
     
     # K-fold Parameters
     k = 5
-    kf = KFold(n_splits=k)
+    kf = KFold(n_splits=k, shuffle=True, random_state=1)
     splits = kf.split(inputs)
 
     RANDOM_STATE = 42
-
-    # Store Output
-    pos = 0
-    measures = [None] * k
-
-    # Connect to R
-    connector = r_connect()
     
     # Get measurements using K-fold
     for train_index, test_index in splits:
@@ -42,26 +34,34 @@ if __name__ == '__main__':
             sampling_strategy={0:50, 1:50},
             random_state=RANDOM_STATE)
 
-        # Pipeline to NN
+        filename = dataset + '-k' + str(k) + '-under'
+
+        # Train NN
+        print('---> Naive Bayes')
+        clf   = GaussianNB() 
         pipeline = make_pipeline(
             NearMiss(version=2),
-            GaussianNB())
-        # Train NN
-        pipeline.fit(X, Y)
-        # Test NN and get confusion matrix
-        predictions = pipeline.predict(x_test)
-        print(DATASETS.confusion_matrix(x_test, y_test, pipeline))
-        print("precision: " + str(DATASETS.precision(y_test, predictions)))
-        print("recall: "    + str(DATASETS.recall   (y_test, predictions)))
-        print("fall_out: "  + str(DATASETS.fall_out (y_test, predictions)))
-        print("balanced: "  + str(DATASETS.balanced (y_test, predictions)))
-        print("f1: "        + str(DATASETS.f1       (y_test, predictions)))
-        print("mcc: "       + str(DATASETS.mcc      (y_test, predictions)))
-        print("auc: "       + str(DATASETS.auc      (y_test, predictions)))
+            clf)
+        predictions   = DATASETS.train_predict(pipeline, X, Y, x_test)
+        naive_metrics = ['Naive Bayes'] + DATASETS.calculate_results(y_test, predictions)
+        DATASETS.store_results(filename, naive_metrics)
 
-        # Compute and print metrics for dataset
-        measures[pos] = connector.get_metrics(X, Y)
-        pos += 1
+        print('---> Decision Tree')
+        clf   = DecisionTreeClassifier()
+        pipeline = make_pipeline(
+            NearMiss(version=2),
+            clf)
+        predictions  = DATASETS.train_predict(pipeline, X, Y, x_test)
+        tree_metrics = ['Decision Tree'] + DATASETS.calculate_results(y_test, predictions)
+        DATASETS.store_results(filename, tree_metrics)
+        
+        print('---> Nearest Centroid')
+        clf   = NearestCentroid()
+        pipeline = make_pipeline(
+            NearMiss(version=2),
+            clf)
+        predictions = DATASETS.train_predict(pipeline, X, Y, x_test)
+        knn_metrics = ['Nearest Centroid'] + DATASETS.calculate_results(y_test, predictions)
+        DATASETS.store_results(filename, knn_metrics)
 
-    # Measure from the whole dataset
-    final_measure = connector.get_metrics(inputs, target)
+        print('------------------------------')

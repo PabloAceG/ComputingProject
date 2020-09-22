@@ -364,3 +364,35 @@ def auc(targets, predictions) -> float:
     fpr, tpr, thresholds = metrics.roc_curve(targets, predictions)
 
     return round(metrics.auc(fpr, tpr), 4)
+
+def store_results(filename:str, metrics:list):
+    with open('./code/results/' + filename + '.csv', mode='a', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(metrics)
+
+def calculate_results(targets:list, predictions:list) -> list:
+    # Metrics
+    ppv:float = precision(targets, predictions) 
+    tpr:float = recall   (targets, predictions)
+    fpr:float = fall_out (targets, predictions)
+    ba :float = balanced (targets, predictions)
+    fm :float = f1       (targets, predictions)
+    m  :float = mcc      (targets, predictions)
+    a  :float = auc      (targets, predictions)
+    metrics:list  = [ppv, tpr, fpr, ba, fm, m, a]
+    # Show results
+    print("precision: " + str(ppv))
+    print("recall: "    + str(tpr))
+    print("fall_out: "  + str(fpr))
+    print("balanced: "  + str(ba))
+    print("f1: "        + str(fm))
+    print("mcc: "       + str(m))
+    print("auc: "       + str(a))
+
+    return metrics
+
+def train_predict(clf, input_train, target_train, test):
+    # Train
+    clf.fit(input_train, target_train)
+    # Test
+    return clf.predict(test)

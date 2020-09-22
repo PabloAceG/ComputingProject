@@ -159,5 +159,6 @@ if __name__ == '__main__':
         results = add_metrics(results, metrics)
 
     # Print Metrics
+    print(results)
     plot_metrics_comparison(results)
  
