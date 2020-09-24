@@ -146,13 +146,4 @@ class r_connect:
         connection = self.__connection
         
         return connection.r(operation)
-        """
-        try:
-            metric = connection.r(operation)
-        except Exception as err_msg:
-            metric = None
-            print ('Could not retrieve {0}!: {0}'.format (operation, err_msg) )
-        finally :
-            return metric
-        """
         

@@ -43,7 +43,7 @@ def __load_csv(path):
 
     return dataset
 
-def __parte_dataset(dataset, start):
+def __parte_dataset(dataset, input_select, target_select):
     '''
         Takes a dataset and parses it to only take what is necessary.
         Inputs:
@@ -54,15 +54,15 @@ def __parte_dataset(dataset, start):
             - target: Target column of the dataset.
     '''
 
-    last_column = -1
     num_rows    = len(dataset)
+    last_column = target_select if (target_select < 0) else None
 
     # Input
-    input_columns = dataset.columns[start : last_column]
+    input_columns = dataset.columns[input_select:last_column]
     input = dataset[input_columns].head(num_rows).astype(float).to_numpy()
 
     # Target
-    target_column = dataset.columns[last_column]
+    target_column = dataset.columns[target_select]
     target = dataset[target_column].head(num_rows)
 
     # Parse output
@@ -75,7 +75,7 @@ def __parte_dataset(dataset, start):
 
     return input, target
 
-def __data_preparation(path, start, type='arff', shuffle=False):
+def __data_preparation(path, input_select, target_select, type='arff', shuffle=False):
     '''
         Loads an .arff/.csv file and parses its content to input/output valid 
         for a Machine Learning application.
@@ -106,7 +106,7 @@ def __data_preparation(path, start, type='arff', shuffle=False):
         dataset = dataset.sample(frac=1)
     
     # Parse data
-    data = (dataset, start)
+    data = (dataset, input_select, target_select)
     input, target = __parte_dataset(*data)
     
     return input, target
@@ -161,9 +161,10 @@ def get_dataset(name, shuffle=False):
             - target: Target column of the dataset.
     '''
 
-    path  = ''     # Location of file
-    start = 0      # From which columns to use
-    type  = 'arff' # Type of file to be read. Default .arff
+    path       = ''     # Location of file
+    start      = 0      # From which columns to use
+    output_col = -2     # Position of output column
+    type       = 'arff' # Type of file to be read. Default .arff
 
     if name == 'ant':
         # Retrieve data
@@ -174,6 +175,7 @@ def get_dataset(name, shuffle=False):
         # Retrieve data
         path = './dataset/Apache.csv'
         start = 3
+        output_col = -1
         type = 'csv'
         
     elif name == 'camel':
@@ -223,13 +225,70 @@ def get_dataset(name, shuffle=False):
         # Retrieve data
         path = './dataset/xerces-1.4.arff'
         start = 3
-        
+
+    elif name == 'hadoop-1':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.1.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+
+    elif name == 'hadoop-2':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.2.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    elif name == 'hadoop-3':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.3.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    elif name == 'hadoop-4':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.4.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    elif name == 'hadoop-5':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.5.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    elif name == 'hadoop-6':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.6.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    elif name == 'hadoop-7':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.7.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    elif name == 'hadoop-8':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.8.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    
     else:
         raise Exception('The given dataset name is not valid.') 
         sys.exit(404)
     
     # Return results
-    input, target = __data_preparation(path, start, type, shuffle)
+    input, target = __data_preparation(path, start, output_col, type, shuffle)
 
     return input, target
 
@@ -302,13 +361,16 @@ def fall_out(targets, predictions) -> float:
             true_negative  += 1
         if (o != t and o == 1):
             false_positive += 1
-    # Rates
-    true_negative  /= num_items
-    false_positive /= num_items
+    try:
+        # Rates
+        true_negative  /= num_items
+        false_positive /= num_items
 
-    # False Positive Rate
-    fdr:float = false_positive / (false_positive + true_negative)
-    return round(fdr, 4)
+        # False Positive Rate
+        fdr:float = false_positive / (false_positive + true_negative)
+        return round(fdr, 4)
+    except:
+        return 0
 
 def precision(targets, predictions) -> float:
     '''

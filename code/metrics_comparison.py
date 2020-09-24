@@ -1,10 +1,11 @@
 # Libraries
-from r_connect import r_connect
 from numpy     import matrix
 import numpy
 import math
-import data              as DATASETS
 import matplotlib.pyplot as plt
+
+from r_connect import r_connect
+import data as DATASETS
 
 def add_metrics(storage, dataset_metrics):
     '''
@@ -44,14 +45,15 @@ def plot_metrics_comparison(metrics):
     '''
     i = 0
     j = 0
-    for metric in results:
+    for metric in metrics:
         rows = 2
-        cols = int(math.ceil(len(results[metric]) / rows))
+        cols = int(math.ceil(len(metrics[metric]) / rows))
         fig, axs = plt.subplots(rows, cols)
-        for measure in results[metric]:
+        for measure in metrics[metric]:
+            DATASETS.store_results('metrics-hadoop', [metric, measure] + [round(i, 4) for i in metrics[metric][measure]])
             if cols == 1:
-                if results[metric][measure]:
-                    axs[i].bar(datasets, results[metric][measure])
+                if metrics[metric][measure]:
+                    axs[i].bar(datasets, metrics[metric][measure])
                 
                 else:
                     axs[i].text(0.5, 0.5, 'No data')
@@ -59,8 +61,8 @@ def plot_metrics_comparison(metrics):
                 title = metric + ': ' + measure
                 axs[i].set_title(title)
             else:
-                if results[metric][measure]:
-                    axs[i, j].bar(datasets, results[metric][measure])
+                if metrics[metric][measure]:
+                    axs[i, j].bar(datasets, metrics[metric][measure])
                 
                 else:
                     axs[i, j].text(0.5, 0.5, 'No data')
@@ -85,6 +87,7 @@ if __name__ == '__main__':
     '''
 
     # Datasets to analyze
+    '''
     datasets = [
         'ant', 
         'apache',
@@ -96,6 +99,18 @@ if __name__ == '__main__':
         'xalan',
         'xerces'
     ]
+    '''
+    datasets = [
+        'hadoop-1',
+        'hadoop-2',
+        'hadoop-3',
+        'hadoop-4',
+        'hadoop-5',
+        'hadoop-6',
+        'hadoop-7',
+        'hadoop-8',
+    ]
+
 
     # Store metrics computed from datasets (datatype: dict)
     results = {
