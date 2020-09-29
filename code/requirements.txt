@@ -6,3 +6,4 @@ pandas
 liac-arff
 matplotlib
 imbalanced-learn
+seaborn

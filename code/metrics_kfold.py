@@ -80,12 +80,12 @@ if __name__ == '__main__':
             print('------------------------------')
 
         # K-fold Mean
-        mean_naive = mean_naive / k
-        DATASETS.store_results(filename, ['Naive Bayes Mean'] + mean_naive.tolist())
-        mean_tree = mean_tree / k
-        DATASETS.store_results(filename, ['Decision Tree Mean'] + mean_tree.tolist())
-        mean_knn = mean_knn / k
-        DATASETS.store_results(filename, ['Nearest Centroid Mean'] + mean_knn.tolist())
+        mean_naive = [round(i, 4) for i in (mean_naive / k)]
+        DATASETS.store_results(filename, ['Naive Bayes Mean'] + mean_naive)
+        mean_tree = [round(i, 4) for i in (mean_tree / k)]
+        DATASETS.store_results(filename, ['Decision Tree Mean'] + mean_tree)
+        mean_knn = [round(i, 4) for i in (mean_knn / k)]
+        DATASETS.store_results(filename, ['Nearest Centroid Mean'] + mean_knn)
 
         print([mean_naive, mean_tree, mean_knn])
     
