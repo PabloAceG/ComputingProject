@@ -396,3 +396,7 @@ TSWLatexianTemp*
 
 # generated if using elsarticle.cls
 *.spl
+
+# Others
+*.cod
+*.sbl
