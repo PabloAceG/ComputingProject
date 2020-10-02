@@ -1,0 +1,81 @@
+\chapter{Prerequisites}\label{chp:prerequisites}
+
+Some relevant code sections have been included. The whole project is publicly 
+available on GitHub: \url{https://github.com/PabloAceG/ComputingProject}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To be able to execute the experiments within the repository, Python3 is needed. 
+Anaconda or the official Python located in the official repositories can be used 
+as long as version 3 or posterior is used. Trying to replicate the experiments 
+on some operative systems might terminate in error. If this is the case, python
+can be changed (\textit{Linux}) with:
+
+\begin{lstlisting}[language=bash]
+    sudo update-alternatives --config python
+\end{lstlisting}
+
+R (programming language) is needed before trying to execute the project. Also, 
+the following packages are mandatory in order to replicate the experiments:
+
+\begin{itemize}
+    \item ECoL - Dataset Complexity Metrics Package.
+        \begin{itemize}
+            \item \url{https://github.com/lpfgarcia/ECoL}
+            \item \url{https://cran.r-project.org/web/packages/ECoL/}
+        \end{itemize}
+    \item Rserve - server, responds requests made to R: 
+    \url{https://rforge.net/Rserve/doc.html}.
+\end{itemize}
+
+Once the previous requisites are fulfilled, the R server can be started by 
+executing the following commands:
+
+\begin{lstlisting}[language=bash]
+library(Rserve) # import the library
+run.Rserve() # start the server. Or simply Rserve()
+\end{lstlisting}
+
+Now, it is time to download the project to install the remaining Python 
+packages. The project can be downloaded from 
+\url{https://github.com/PabloAceG/ComputingProject/}.
+
+Same as before, some Python packages are mandatory to execute the project. These
+packages are available in requirements.txt
+\footnote{\url{https://github.com/PabloAceG/ComputingProject/blob/master/code/requirements.txt}} 
+file. To automatically install those packages, run\footnote{All commands are 
+executed from the parent folder of the repository.}:
+
+\begin{lstlisting}[language=bash]
+pip install -r .\code\requirements.txt
+\end{lstlisting}
+
+It might happen that \lstinline{pip install -r} might not install all packages. 
+To solve this, the failing packages must be installed manually:
+
+\begin{lstlisting}[language=bash]
+pip install <package_name>
+\end{lstlisting}
+
+Now, the experiments should be replicable. The experiment's code is under the 
+folder \url{https://github.com/PabloAceG/ComputingProject/tree/master/code}
+To run them, execute: 
+
+\begin{lstlisting}[language=bash]
+python code/metrics_comparison.py
+python code/metrics_kfold.py
+python code/metrics_kfold_undersampling.py
+python code/metrics_kfold_oversampling.py
+\end{lstlisting}
+
+Each of the previous commands execute one experiment.
+
+As final remarks, the class \lstinline{r_connect.py}
+\footnote{\url{https://github.com/PabloAceG/ComputingProject/blob/master/code/r_connect.py}}
+is the client connection the server in R (Rserve). It makes the requests to the 
+\lstinline{ECoL} package to obtain the complexity metrics.
+
+The class \lstinline{data.py}
+\footnote{\url{https://github.com/PabloAceG/ComputingProject/blob/master/code/data.py}}
+standardizes the datasets input (parsing data) and some other metrics from the 
+package sklearn \footnote{\url{https://scikit-learn.org/stable/index.html}}.

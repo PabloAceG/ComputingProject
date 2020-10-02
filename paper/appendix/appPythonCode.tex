@@ -1,0 +1,1050 @@
+\chapter{Python Relevant Code}
+\label{chp:pythoncode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Rserve Python Client} \label{sec:rconnect}
+
+The class \lstinline{r_connect.py} is a client for R package Rserve. Makes 
+requests to ECoL R package and parses data. 
+
+The import statements have been made redundant in this snippet and the rest of 
+the snippets in this appendix.
+
+\begin{lstlisting}[language=Python, caption={Connection code to requests R ECoL 
+functions}, label={lst:r-connect}]
+class r_connect:
+
+    __metrics = None
+
+    def __init__ (self):
+        self.__connection = self.__connect()
+        
+    def __connect (self):
+        return pyRserve.connect()
+
+    def get_metrics (self, X=None, Y=None):
+        if X is None and Y is None :
+            if self.__metrics is not None:
+                return self.__metrics
+            else :
+                # No data and no parameters: finish execution
+                error_message = '...'
+                raise Exception(error_message)
+                sys.exit (400)
+        else :
+            # Stores connection to R's RPC.
+            connect = self.__connection
+
+            # Sends the input matrix and the output vector to R.
+            connect.r.X = X
+            connect.r.y = Y
+            
+            # Library to use in R.
+            connect.r('df_X <- as.data.frame(X)')
+            connect.r('df_y <- as.data.frame(y)')
+            connect.r('library("ECoL")')
+            
+            ## Metrics, uses a dictionary to provide a faster access to its 
+            # contents.
+            metrics = {}
+
+            # Balance: C1, C2
+            balance = self.safe_connect('balance(df_X, df_y)') 
+            balance_dic_entry = { 'balance' :  balance }
+            metrics.update (balance_dic_entry)
+
+            # Correlation: C1, C2, C3, C4
+            correlation = self.safe_connect('correlation(df_X, df_y, summary=c("mean"))') 
+            correlation_dic_entry = { 'correlation' : correlation } 
+            metrics.update (correlation_dic_entry)
+
+            # Dimensionality: T2, T3, T4
+            dimensionality = self.safe_connect('dimensionality(df_X, df_y, summary=c("mean"))') 
+            dimensionality_dic_entry = { 'dimensionality' : dimensionality }
+            metrics.update (dimensionality_dic_entry)
+
+            # Linearity: L1, L2, L3
+            linearity = self.safe_connect('linearity(df_X, df_y, summary=c("mean"))') 
+            linearity_dic_entry = { 'linearity' : linearity }
+            metrics.update (linearity_dic_entry)
+
+            # Neighborhood: N1, N2, N3, N4, T1, LSC
+            neighborhood = self.safe_connect('neighborhood(df_X, df_y, summary=c("mean"))') 
+            neighborhood_dic_entry = { 'neighborhood' : neighborhood }
+            metrics.update (neighborhood_dic_entry)
+
+            # Network: Density, ClsCoef, Hubs
+            network = self.safe_connect('network(df_X, df_y, summary=c("mean"))') 
+            network_dic_entry = { 'network' : network }
+            metrics.update (network_dic_entry)
+
+            # Overlap: F1, F1v, F2, F3, F4
+            overlap = self.safe_connect('overlapping(df_X, df_y, summary=c("mean"))') 
+            overlap_dic_entry = { 'overlap' : overlap }
+            metrics.update (overlap_dic_entry)
+
+            # Smoothness: S1, S2, S3, S4
+            smoothness = self.safe_connect('smoothness(df_X, df_y, summary=c("mean"))') 
+            smoothness_dic_entry = { 'smoothness' : smoothness }
+            metrics.update (smoothness_dic_entry)
+            
+            self.__metrics = metrics
+
+            return metrics
+
+    def print_metrics (self, metrics=None) :
+        print ('\n\n=== Printing metrics ===', end='\n\n')
+
+        ...
+        ...
+
+    def get_print_metrics(self, X, Y):
+        self.get_metrics (X, Y)
+        self.print_metrics (self.__metrics)
+
+        return self.__metrics
+
+    def safe_connect(self, operation) :
+        connection = self.__connection
+        
+        return connection.r(operation)
+        
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Datasets and Operations on Data}
+
+The following code contains the logic to read and parse datasets requested 
+through the function \lstinline{getDataset(...)}. The datasets can be shuffled 
+if specified through parameter, but in this situation no experiments used 
+that option (as the results should be replicated, the input that should always
+be the same).
+
+The class also uses \textit{sklearn} library to calculate some metrics. The 
+functions in this code simply parse the results so that they are easier to read
+afterwards (no need to have more than 4 digits of precision in float numbers).
+
+Not all the code has been copied, as some parts repeat. 
+
+\begin{lstlisting}[language=Python, caption={Load datasets, calculate metrics, 
+export results to CSV files, etc.}, label={lst:data}]
+...
+...
+
+def __load_arff(path):
+    '''
+        Loads the dataset content of an .arff file into the workspace.
+        Input:
+            - path: Location of the file.
+        Output:
+            - dataset: Data from the file.
+    '''
+    
+    dataset = []
+
+    with open(path, 'r') as data:
+        dataset = arff.load(data)['data']        
+
+    return dataset
+
+def __load_csv(path):
+    '''
+        Loads the data content of an .csv file into the workspace.
+        Input:
+            - path: Location of the file.
+        Output:
+            - dataset: Data from the file.
+    '''
+
+    dataset = []
+
+    with open (path, 'r') as csv_file:
+        dataset = pd.read_csv(
+            csv_file,
+            sep=','
+        )
+
+    return dataset
+
+def __parte_dataset(dataset, input_select, target_select):
+    '''
+        Takes a dataset and parses it to only take what is necessary.
+        Inputs:
+            - dataset: Input raw data as a Pandas Data Framework.
+            - start: Where columns start to be useful.
+        Output:
+            - input: Input arrays of the dataset.
+            - target: Target column of the dataset.
+    '''
+
+    num_rows    = len(dataset)
+    last_column = target_select if (target_select < 0) else None
+
+    # Input
+    input_columns = dataset.columns[input_select:last_column]
+    input = dataset[input_columns].head(num_rows).astype(float).to_numpy()
+
+    # Target
+    target_column = dataset.columns[target_select]
+    target = dataset[target_column].head(num_rows)
+
+    # Parse output
+    sample = target[0]
+    if not isinstance(sample, str): 
+        target = numpy.where(target > 0, 1, 0)
+    else: 
+        has_faults = target == 'yes'
+        target = numpy.where(has_faults , 1, 0)
+
+    return input, target
+
+def __data_preparation(path, input_select, target_select, type='arff', shuffle=False):
+    '''
+        Loads an .arff/.csv file and parses its content to input/output valid 
+        for a Machine Learning application.
+        Input:
+            - path: Location of the file.
+            - start: Where columns start to be useful (string columns are not 
+                necessary).
+            - type: It can be:
+                - arff
+                - csv
+        Output:
+            - input: Input arrays of the dataset.
+            - target: Target column of the dataset.
+    '''
+    
+    # Load data
+    dataset = []
+    if   type == 'arff':
+        dataset = __load_arff(path)
+    elif type == 'csv':
+        dataset = __load_csv(path)
+    else:
+        raise Exception('Not a valid file type. Try with arff or csv!')
+        sys.exit(404)
+    dataset = pd.DataFrame(dataset)
+
+    if shuffle:
+        dataset = dataset.sample(frac=1)
+    
+    # Parse data
+    data = (dataset, input_select, target_select)
+    input, target = __parte_dataset(*data)
+    
+    return input, target
+
+def __data_preparation_iris_dataset(path):
+    # Load data
+    dataset = __load_csv(path)
+    dataset = pd.DataFrame(dataset)
+
+    # Parse data
+    start    = 0
+    last     = -1
+    num_rows = len(dataset)
+
+    # Input
+    input_columns = dataset.columns[start : last]
+    input = dataset[input_columns].head(num_rows).astype(float).to_numpy()
+
+    # Target
+    target_column = dataset.columns[last]
+    target = dataset[target_column].head(num_rows)
+    
+
+    # Parse target
+    values = {'setosa': 1, 'versicolor': 2, 'virginica': 3}
+    target = numpy.array( [
+        values[type] for type in target
+    ] )
+
+    return input, target
+
+def get_dataset(name, shuffle=False):
+    '''
+        Retrieves the data of a given dataset, separated into input information
+        and target output - .arff or .csv files only.
+        Input:
+            - name: Dataset name.
+                - ant
+                - apache
+                - camel
+                - iris
+                - ivy
+                - jedit
+                - log4j
+                - poi
+                - synapse
+                - xalan
+                - xerces
+        Output:
+            - input: Input arrays of the dataset.
+            - target: Target column of the dataset.
+    '''
+
+    path       = ''     # Location of file
+    start      = 0      # From which columns to use
+    output_col = -2     # Position of output column
+    type       = 'arff' # Type of file to be read. Default .arff
+
+    if name == 'ant':
+        # Retrieve data
+        path = './dataset/ant-1.7.arff'
+        start = 3
+
+    elif name == 'apache':
+        # Retrieve data
+        path = './dataset/Apache.csv'
+        start = 3
+        output_col = -1
+        type = 'csv'
+        
+    elif name == 'camel':
+        # Retrieve data
+        path = './dataset/camel-1.6.arff'
+        start = 3
+        
+    elif name == 'iris': # Special case. Non-binary output. Needs different 
+                         # treatment.
+        # Retrieve data
+        path = './dataset/iris.csv'
+        input, target = __data_preparation_iris_dataset(path, shuffle)
+
+        return input, target
+
+    elif name == 'ivy':
+        # Retrieve data
+        path = './dataset/ivy-2.0.arff'
+        start = 3
+
+    ...
+    ...
+    elif name == 'xerces':
+        # Retrieve data
+        path = './dataset/xerces-1.4.arff'
+        start = 3
+
+    elif name == 'hadoop-1':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.1.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+
+    ...
+    ...
+    elif name == 'hadoop-8':
+        # Retrieve data
+        path = './dataset/hadoop-proc-0.8.csv'
+        start = 2
+        output_col = 1
+        type = 'csv'
+    
+    
+    else:
+        raise Exception('The given dataset name is not valid.') 
+        sys.exit(404)
+    
+    # Return results
+    input, target = __data_preparation(path, start, output_col, type, shuffle)
+
+    return input, target
+
+def confusion_matrix(x_test: list, y_test: list, classifier):
+    '''
+        Obtains the confusion matrix for a given testing dataset, with binary
+        output.
+        Input:
+            - x_test: paremeters for testing dataset.
+            - y_test: target/desired output for testing dataset.
+            - classifier: trained classifier.
+        Output:
+            (
+                true_positive: successfully predicted positives
+                true_negative: successfully predicted negatives
+                false_positive: unsuccessfully predicted positives
+                false_negative: unsuccessfully predicted positives
+            )
+    '''
+    # Confusion Matrix Cells
+    true_positive:float  = 0
+    true_negative:float  = 0
+    false_positive:float = 0
+    false_negative:float = 0
+
+    # Calculate number of repetitions of each classification. 
+    for (input, target) in zip(x_test, y_test):
+        prediction:int = classifier.predict([input])[0]
+
+        if prediction == target:    # Success
+            if prediction: true_positive += 1
+            else:          true_negative += 1
+        else:                       # Wrong
+            if prediction: false_positive += 1
+            else:          false_negative += 1
+    
+    # Transform absolute to relative values
+    num_samples = len(y_test)
+    true_positive  = true_positive  / num_samples
+    true_negative  = true_negative  / num_samples
+    false_positive = false_positive / num_samples
+    false_negative = false_negative / num_samples
+
+    return (true_positive, true_negative, false_positive, false_negative)
+
+def recall(targets, predictions) -> float:
+    '''
+        Sensitivity, recall, hit rate or True Positive Rate (RPR)
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html
+               TP       TP
+        TPR = ---- = --------- = 1 - FNR
+               P      TP + FN
+    '''
+    return round(metrics.recall_score(targets, predictions), 4)
+
+def fall_out(targets, predictions) -> float:
+    '''
+        Fallout, or False Positive Rate (FPR)
+               FP       FP
+        FPR = ---- = --------- = 1 - TNR
+               N      FP + TN
+    '''
+    # Calculate TN and FP rates
+    num_items:int = len(targets)
+    false_positive:float = 0
+    true_negative: float = 0
+    # Count
+    for (t, o) in zip(targets, predictions):
+        if (o == t and o == 0):
+            true_negative  += 1
+        if (o != t and o == 1):
+            false_positive += 1
+    try:
+        # Rates
+        true_negative  /= num_items
+        false_positive /= num_items
+
+        # False Positive Rate
+        fdr:float = false_positive / (false_positive + true_negative)
+        return round(fdr, 4)
+    except:
+        return 0
+
+def precision(targets, predictions) -> float:
+    '''
+        Precision or positive predictive value (PPV).
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html
+                 TP
+        PPV = --------- = 1 - FDR
+               TP + FP
+    '''
+    return round(metrics.precision_score(targets, predictions), 4)
+
+def balanced(targets, predictions) -> float:
+    '''
+        Balanced Accuracy (BA)
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.balanced_accuracy_score.html#sklearn.metrics.balanced_accuracy_score
+              TPR + TNR
+        BA = -----------
+                  2
+    '''
+
+    return round(metrics.balanced_accuracy_score(targets, predictions), 4)
+
+def f1(targets, predictions) -> float:
+    '''
+        F1 Score. Is the harmonic mean of precision and sensitivity.
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
+                PPV x TPR         2 TP
+        F1 = 2 ----------- = ----------------
+                PPV + TPR     2 TP + FP + FN
+    '''
+    return round(metrics.f1_score(targets, predictions), 4)
+
+def mcc(targets, predictions) -> float:
+    '''
+        Matthews Correlation Coefficient (MCC).
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html
+                          TP x TN - FP x FN
+        MCC = --------------------------------------------
+               sqrt((TP + FP)(TP + FN)(TN + FP)(TN + FN))
+    '''
+    return round(metrics.matthews_corrcoef(targets, predictions), 4)
+
+def auc(targets, predictions) -> float:
+    '''
+        Area Under Receiver Operating Characteristic Curve, 
+        Area Under ROC Curve or AUC.
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+        https://scikit-learn.org/stable/modules/generated/sklearn.metrics.auc.html
+               1 + TPR - FPR
+        AUC = ---------------
+                    2
+    '''
+    fpr, tpr, thresholds = metrics.roc_curve(targets, predictions)
+
+    return round(metrics.auc(fpr, tpr), 4)
+
+def store_results(filename:str, metrics:list):
+    with open('./code/results/' + filename + '.csv', mode='a', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(metrics)
+
+def calculate_results(targets:list, predictions:list) -> list:
+    # Metrics
+    ppv:float = precision(targets, predictions) 
+    tpr:float = recall   (targets, predictions)
+    fpr:float = fall_out (targets, predictions)
+    ba :float = balanced (targets, predictions)
+    fm :float = f1       (targets, predictions)
+    m  :float = mcc      (targets, predictions)
+    a  :float = auc      (targets, predictions)
+    metrics:list  = [ppv, tpr, fpr, ba, fm, m, a]
+
+    return metrics
+
+def train_predict(clf, input_train, target_train, test):
+    # Train
+    clf.fit(input_train, target_train)
+    # Test
+    return clf.predict(test)
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experiment 1. Complexity Metrics Comparison}
+\label{sec:exp-compl-metrics-code}
+
+The objective is to see if there is any dependency between some complexity 
+metrics (balance, dimensionality, overlapping, etc.). 
+
+This programs obtains the complexity metrics (more in section \ref{sec:ecol}) 
+from different datasets, and stores the results on a CSV file for their 
+comparison. The dataset is loaded, metrics are retrieved for every dataset and 
+those metrics are plotted and stored.
+
+\begin{lstlisting}[language=Python, caption={Compare complexity metrics of 
+different datasets}, label={lst:metrics-comparison}]
+...
+...
+from r_connect import r_connect
+import data as DATASETS
+
+def add_metrics(storage, dataset_metrics):
+    '''
+        Includes a new set of calculated metrics into a variable.
+        It creates an array for each metric's measure.
+        Input:
+            - storage(dict) : Data structure to store the list of measures from 
+                the metrics of datasets.
+            - dataset_metrics (dict): Metrics computed from a dataset.
+        Output:
+            - storage (dict): Metrics added to the already stored ones.
+    '''
+    # Iterate through the metrics
+    for m in storage:
+        # Metric might not have been calculated for dataset
+        if m in dataset_metrics:
+            metric = dataset_metrics[m]
+      
+            # Iterate through the measures of the metric
+            for measure in storage[m]:
+                try:
+                    # Measure might not have been calculated for dataset
+                    if measure in storage[m]:
+                        storage[m][measure].append(float(metric[measure]))
+                except Exception:
+                    pass
+        else:
+            print('Something went wrong')
+
+    return storage
+
+def plot_metrics_comparison(metrics):
+    '''
+        Input:
+            - metrics:
+        Output:
+    '''
+    i = 0
+    j = 0
+    for metric in metrics:
+        rows = 2
+        cols = int(math.ceil(len(metrics[metric]) / rows))
+        fig, axs = plt.subplots(rows, cols)
+        for measure in metrics[metric]:
+            DATASETS.store_results('metrics-hadoop', [metric, measure] + [round(i, 4) for i in metrics[metric][measure]])
+            if cols == 1:
+                if metrics[metric][measure]:
+                    axs[i].bar(datasets, metrics[metric][measure])
+                
+                else:
+                    axs[i].text(0.5, 0.5, 'No data')
+            
+                title = metric + ': ' + measure
+                axs[i].set_title(title)
+            else:
+                if metrics[metric][measure]:
+                    axs[i, j].bar(datasets, metrics[metric][measure])
+                
+                else:
+                    axs[i, j].text(0.5, 0.5, 'No data')
+                
+                title = metric + ': ' + measure
+                axs[i, j].set_title(title)
+            
+            if j == cols - 1:
+                i += 1
+                j =  0
+            else:
+                j += 1
+            
+        i = 0
+        j = 0
+        plt.show()   
+
+
+if __name__ == '__main__':
+    '''
+        Main code - to be executed
+    '''
+
+    # Datasets to analyze
+    '''
+    datasets = [
+        'ant', 
+        'apache',
+        'camel',
+        'ivy',
+        'jedit',
+        'log4j',
+        'synapse',
+        'xalan',
+        'xerces'
+    ]
+    '''
+    datasets = [
+        'hadoop-1',
+        'hadoop-2',
+        'hadoop-3',
+        'hadoop-4',
+        'hadoop-5',
+        'hadoop-6',
+        'hadoop-7',
+        'hadoop-8',
+    ]
+
+
+    # Store metrics computed from datasets (datatype: dict)
+    results = {
+        'balance': {
+            'C1': [],
+            'C2': []
+        },
+        'correlation': {
+            'C1': [],
+            'C2': [],
+            'C3': [],
+            'C4': []
+        },
+        'dimensionality': {
+            'T1': [],
+            'T2': [],
+            'T3': []
+        },
+        'linearity': {
+            'L1': [],
+            'L2': [],
+            'L3': []
+        },
+        'neighborhood': {
+            'N1':  [],
+            'N2':  [],
+            'N3':  [],
+            'N4':  [],
+            'T1':  [],
+            'LSC': [],
+        },
+        'network': {
+            'Density': [],
+            'ClsCoef': [],
+            'Hubs':    []
+        },
+        'overlap': {
+            'F1':  [],
+            'F1v': [],
+            'F2':  [],
+            'F3':  [],
+            'F4':  []
+        },
+        'smoothness': {
+            'S1': [],
+            'S2': [],
+            'S3': [],
+            'S4': []
+        }
+    }
+    
+    # Connect to R
+    connector = r_connect()
+
+    # Get Metrics
+    for set in datasets:
+        print(set)
+        inputs, targets = DATASETS.get_dataset(set)
+        metrics = connector.get_metrics(inputs, targets)
+
+        results = add_metrics(results, metrics)
+
+    # Print Metrics
+    print(results)
+    plot_metrics_comparison(results)
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experiment 2. Compare Metrics on K-fold Cross Validation}
+\label{sec:exp-kfold-code}
+
+The function calls to the \textit{data} (referenced as \textit{DATASETS} in the 
+code) object are unfolded in the snippet \ref{lst:data}.
+
+The objective is to look for a relation between confusion matrix metrics 
+(recall, fallout, etc.) between the folds generated out of a K-fold Cross
+Validation. See if there is a certain linearity between folds and what might 
+cause certain behaviors.
+
+In order do create this experiment, a dataset is loaded, and then it is folded 
+into k-equally-sized parts. For each part, three different classification 
+algorithms are trained and tested to compare the aforementioned metrics
+(more about the metrics in \ref{sec:ev-metrics}). This same process is repeated
+for every dataset.
+
+\begin{lstlisting}[language=Python, caption={Calculate Metrics from Confusion 
+Matrix to compare in-fold results}, label={lst:metrics-kfold}]
+...
+...
+import data as DATASETS
+
+if __name__ == '__main__':
+    # Data
+    datasets = [
+        'ant',
+        'apache',
+        'camel',
+        'ivy',
+        'jedit',
+        'log4j',
+        'poi',
+        'synapse',
+        'xalan',
+        'xerces',
+        'hadoop-1',
+        'hadoop-2',
+        'hadoop-3',
+        'hadoop-4',
+        'hadoop-5',
+        'hadoop-6',
+        'hadoop-7',
+        'hadoop-8'
+    ]
+
+    for d in datasets:
+        print('----------' + d + '----------')
+        inputs, target = DATASETS.get_dataset(d)
+        
+        # K-fold Parameters
+        k = 5
+        kf = KFold(n_splits=k)
+        splits = kf.split(inputs)
+        #                   Precision Recall Fallout Balanced F1 MCC AUC
+        mean_naive = np.array([0,       0,      0,      0,    0,  0,  0])
+        mean_tree  = np.array([0,       0,      0,      0,    0,  0,  0])
+        mean_knn   = np.array([0,       0,      0,      0,    0,  0,  0])
+        
+        # Get measurements using K-fold
+        for train_index, test_index in splits:
+            # Data partition
+            x_train, x_test = inputs[train_index], inputs[test_index]
+            y_train, y_test = target[train_index], target[test_index]
+
+            filename = d + '-k' + str(k)
+
+            # Train NN
+            print('---> Naive Bayes')
+            clf   = GaussianNB() 
+            predictions   = DATASETS.train_predict(clf, x_train, y_train, x_test)
+            naive_metrics = DATASETS.calculate_results(y_test, predictions)
+            mean_naive = np.add(mean_naive, naive_metrics)
+            naive_metrics = ['Naive Bayes'] + naive_metrics
+            DATASETS.store_results(filename, naive_metrics)
+
+            print('---> Decision Tree')
+            clf   = DecisionTreeClassifier()
+            predictions  = DATASETS.train_predict(clf, x_train, y_train, x_test)
+            tree_metrics = DATASETS.calculate_results(y_test, predictions)
+            mean_tree = np.add(mean_tree, tree_metrics)
+            tree_metrics = ['Decision Tree'] + tree_metrics
+            DATASETS.store_results(filename, tree_metrics)
+            
+            print('---> Nearest Centroid')
+            clf   = NearestCentroid()
+            predictions = DATASETS.train_predict(clf, x_train, y_train, x_test)
+            knn_metrics = DATASETS.calculate_results(y_test, predictions)
+            mean_knn = np.add(mean_knn, knn_metrics)
+            knn_metrics = ['Nearest Centroid'] + knn_metrics
+            DATASETS.store_results(filename, knn_metrics)
+
+            print('------------------------------')
+
+        # K-fold Mean
+        mean_naive = [round(i, 4) for i in (mean_naive / k)]
+        DATASETS.store_results(filename, ['Naive Bayes Mean'] + mean_naive)
+        mean_tree = [round(i, 4) for i in (mean_tree / k)]
+        DATASETS.store_results(filename, ['Decision Tree Mean'] + mean_tree)
+        mean_knn = [round(i, 4) for i in (mean_knn / k)]
+        DATASETS.store_results(filename, ['Nearest Centroid Mean'] + mean_knn)
+
+        print([mean_naive, mean_tree, mean_knn])
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experiment 3. Compare Metrics with Under-sampling and K-fold Cross 
+Validation}\label{sec:exp3-under}
+
+The function calls to the \textit{data} (referenced as \textit{DATASETS} in the 
+code) object, can be observed in the snippet \ref{lst:data}. Also, the 
+experiment is the same as in \ref{lst:metrics-kfold}, although an 
+under-sampling filter is applied to each fold of the dataset before using any 
+classification algorithm.
+
+This experiment has to be executed as many times as datasets want to be 
+analyzed, as a bulk execution of all the datasets would probably end in error. 
+The reason for this is that if the sampling strategy is too low, then 
+there should not be enough data to properly train the classification. Also,
+it depends on the amount of samples of the minority class, that is why not a
+low enough value can be set for all datasets, and a single-dataset execution
+must be performed.
+
+The values commented at the right of each dataset indicate the recommended
+sampling strategy for that dataset.
+
+\begin{lstlisting}[language=Python, caption={Calculate Metrics from Confusion 
+Matrix to compare in-fold results after applying under-sampling filter}, 
+label={lst:metrics-kfold-undersampling}]
+...
+...
+import data as DATASETS
+
+if __name__ == '__main__':
+    # Data
+    # In this case a loop cannot be used to make all experiments, as the value
+    # of the undersampling may vary on each dataset.
+    dataset ='ant'         # 50
+    #dataset = 'apache'    # 50
+    #dataset = 'camel'     # 50
+    #dataset = 'ivy'       # 30
+    #dataset = 'jedit'     # 7
+    #dataset = 'log4j'     # 11
+    #dataset = 'synapse'   # 50
+    #dataset = 'xalan'     # 6
+    #dataset = 'xerces'    # 50
+    #dataset = 'hadoop-1'  # 38
+    #dataset = 'hadoop-2'  # 31 
+    #dataset = 'hadoop-3'  # 35
+    #dataset = 'hadoop-4'  # 32
+    #dataset = 'hadoop-5'  # 26
+    #dataset = 'hadoop-6'  # 22
+    #dataset = 'hadoop-7'  # 34
+    #dataset = 'hadoop-8'  # 10
+
+    inputs, target = DATASETS.get_dataset(dataset)
+
+    # K-fold Parameters
+    k = 5
+    kf = KFold(n_splits=k, shuffle=True, random_state=1)
+    splits = kf.split(inputs)
+    #                  Precision  Recall Fallout Balanced F1 MCC AUC
+    mean_naive = np.array([0,       0,      0,      0,    0,  0,  0])
+    mean_tree  = np.array([0,       0,      0,      0,    0,  0,  0])
+    mean_knn   = np.array([0,       0,      0,      0,    0,  0,  0])
+
+    RANDOM_STATE = 42
+    
+    # Get measurements using K-fold
+    for train_index, test_index in splits:
+        # Data partition
+        x_train, x_test = inputs[train_index], inputs[test_index]
+        y_train, y_test = target[train_index], target[test_index]
+
+        X, Y = make_imbalance(
+            x_train, y_train,
+            sampling_strategy={0:50, 1:50},
+            random_state=RANDOM_STATE)
+
+        filename = dataset + '-k' + str(k) + '-under'
+
+        # Train NN
+        print('---> Naive Bayes')
+        clf   = GaussianNB() 
+        pipeline = make_pipeline(
+            NearMiss(version=2),
+            clf)
+        predictions   = DATASETS.train_predict(pipeline, X, Y, x_test)
+        naive_metrics = DATASETS.calculate_results(y_test, predictions)
+        mean_naive = np.add(mean_naive, naive_metrics)
+        naive_metrics = ['Naive Bayes'] + naive_metrics
+        DATASETS.store_results(filename, naive_metrics)
+
+        print('---> Decision Tree')
+        clf   = DecisionTreeClassifier()
+        pipeline = make_pipeline(
+            NearMiss(version=2),
+            clf)
+        predictions  = DATASETS.train_predict(pipeline, X, Y, x_test)
+        tree_metrics = DATASETS.calculate_results(y_test, predictions)
+        mean_tree = np.add(mean_tree, tree_metrics)
+        tree_metrics = ['Decision Tree'] + tree_metrics
+        DATASETS.store_results(filename, tree_metrics)
+        
+        print('---> Nearest Centroid')
+        clf   = NearestCentroid()
+        pipeline = make_pipeline(
+            NearMiss(version=2),
+            clf)
+        predictions = DATASETS.train_predict(pipeline, X, Y, x_test)
+        knn_metrics = DATASETS.calculate_results(y_test, predictions)
+        mean_knn = np.add(mean_knn, knn_metrics)
+        knn_metrics = ['Nearest Centroid'] + knn_metrics
+        DATASETS.store_results(filename, knn_metrics)
+
+        print('------------------------------')
+
+    # K-fold Mean
+    mean_naive = [round(i, 4) for i in (mean_naive / k)]
+    DATASETS.store_results(filename, ['Naive Bayes Mean'] + mean_naive)
+    mean_tree = [round(i, 4) for i in (mean_tree / k)]
+    DATASETS.store_results(filename, ['Decision Tree Mean'] + mean_tree)
+    mean_knn = [round(i, 4) for i in (mean_knn / k)]
+    DATASETS.store_results(filename, ['Nearest Centroid Mean'] + mean_knn)
+
+    print([mean_naive, mean_tree, mean_knn])
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experiment 4. Compare Metrics with Over-sampling and K-fold Cross 
+Validation}
+
+The function uses \textit{data} (referenced as \textit{DATASETS} in the code) 
+object - which is unfolded in the snippet \ref{lst:data}. Also, the experiment 
+is the same as in \ref{lst:metrics-kfold} and 
+\ref{lst:metrics-kfold-undersampling}, but in this situation an over-sampling 
+filter is applied to each fold of the dataset before starting the classification
+process.
+
+Once again, a bulk execution with all the datasets is performed - unlike in 
+Section~\ref{sec:exp3-under} there is minimum number to meet, so all the 
+datasets can be treated generically.
+
+The oversampling algorithm selected for this experiment has been SMOTE 
+(see Section~\ref{smote} for more information). Also, the same three classifiers
+used for the previous experiments are the ones used to compare results: 
+(1) Naive Bayes - Gaussian; (2) Decission Tree; and (3) kNN Nearest Centroid.
+
+\begin{lstlisting}[language=Python, caption={Calculate Metrics from Confusion 
+Matrix to compare in-fold results after applying over-sampling filter}, 
+label={lst:metrics-kfold-oversampling}]
+...
+...
+import data as DATASETS
+
+if __name__ == '__main__':
+    # Data
+    datasets = [
+        'ant',
+        'apache',
+        'camel',
+        'ivy',
+        'jedit',
+        'log4j',
+        'poi',
+        'synapse',
+        'xalan',
+        'xerces',
+        'hadoop-1',
+        'hadoop-2',
+        'hadoop-3',
+        'hadoop-4',
+        'hadoop-5',
+        'hadoop-6',
+        'hadoop-7',
+        'hadoop-8'
+    ]
+
+    for d in datasets:
+        print('----------' + d + '----------')
+        inputs, target = DATASETS.get_dataset(d)
+    
+        # K-fold Parameters
+        k = 5
+        kf = KFold(n_splits=k)
+        splits = kf.split(inputs)
+        #                   Precision Recall Fallout Balanced F1 MCC AUC
+        mean_naive = np.array([0,       0,      0,      0,    0,  0,  0])
+        mean_tree  = np.array([0,       0,      0,      0,    0,  0,  0])
+        mean_knn   = np.array([0,       0,      0,      0,    0,  0,  0])
+        
+        # Get measurements using K-fold
+        for train_index, test_index in splits:
+            # Data partition
+            x_train, x_test = inputs[train_index], inputs[test_index]
+            y_train, y_test = target[train_index], target[test_index]
+
+            filename = d + '-k' + str(k) + '-over'
+
+            # Train NN
+            # Pipeline to NN
+            print('---> Naive Bayes')
+            clf = make_pipeline(
+                SMOTE(),
+                GaussianNB())
+            predictions   = DATASETS.train_predict(clf, x_train, y_train, x_test)
+            naive_metrics = DATASETS.calculate_results(y_test, predictions)
+            mean_naive = np.add(mean_naive, naive_metrics)
+            naive_metrics = ['Naive Bayes'] + naive_metrics
+            DATASETS.store_results(filename, naive_metrics)
+
+            print('---> Decision Tree')
+            clf = make_pipeline(
+                SMOTE(),
+                DecisionTreeClassifier())
+            predictions   = DATASETS.train_predict(clf, x_train, y_train, x_test)
+            tree_metrics = DATASETS.calculate_results(y_test, predictions)
+            mean_tree = np.add(mean_tree, tree_metrics)
+            tree_metrics = ['Decision Tree'] + tree_metrics
+            DATASETS.store_results(filename, tree_metrics)
+
+            print('---> Nearest Centroid')
+            clf = make_pipeline(
+                SMOTE(),
+                NearestCentroid())
+            predictions   = DATASETS.train_predict(clf, x_train, y_train, x_test)
+            knn_metrics = DATASETS.calculate_results(y_test, predictions)
+            mean_knn = np.add(mean_knn, knn_metrics)
+            knn_metrics = ['Nearest Centroid'] + knn_metrics
+            DATASETS.store_results(filename, knn_metrics)
+
+            print('------------------------------')
+
+        # K-fold Mean
+        mean_naive = [round(i, 4) for i in (mean_naive / k)]
+        DATASETS.store_results(filename, ['Naive Bayes Mean'] + mean_naive)
+        mean_tree = [round(i, 4) for i in (mean_tree / k)]
+        DATASETS.store_results(filename, ['Decision Tree Mean'] + mean_tree)
+        mean_knn = [round(i, 4) for i in (mean_knn / k)]
+        DATASETS.store_results(filename, ['Nearest Centroid Mean'] + mean_knn)
+
+        print([mean_naive, mean_tree, mean_knn])
+
+\end{lstlisting}
+
+\cleardoublepage
