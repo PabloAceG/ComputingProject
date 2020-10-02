@@ -27,4 +27,1516 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\chapter{Empirical Work}\label{chp:empwork}
+
+In this section is about the experimental work carried out through this 
+research. Firstly, describes the datasets used for the experimentation;
+then, the supervised classifiers evaluated; the evaluation metrics chosen; and 
+finally, present and discuss the results.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Datasets}\label{sec:datasets}
+
+In this work, publicly available datasets are going to be used, in the domain 
+of Software defect prediction: use of Jureczko and Madeyski dataset
+\footnote{\url{http://snow.iiar.pwr.wroc.pl:8080/MetricsRepo/}} 
+\cite{Jureczko2010, MadeyskiJ2015} and the Harman Search Base dataset
+\cite{Harman2014ssbse}. 
+
+From the first cluster of datasets, 15 open source projects are the ones chosen 
+(a total of 8 are used for this project). The number of defects found in each 
+class collected from the Software Management System (SCM) using a regular 
+expression. The datasets are publicly available  (can be found in the PROMISE 
+repository~\cite{promiserepo}). These datasets have been used in previous 
+researches, \cite{Xu2018, Wang2016, Xia2016}, which allows comparing and 
+analyzing the obtained results.
+
+A sample can be considered as \textit{defective} when the number of defects 
+inside the class is more than 0. Similarly, if the number of defects is indeed
+0, then the class is \textit{non-defective}. This allows a binary 
+classification, making easier handling results, operations and comparisons.
+
+\begin{center}
+\begin{longtable}{ | l | l | }
+\caption{Defect Metrics Dataset Variables}\label{tab:dataJureczkoMetrics} \\
+
+\hline
+ \emph{Metric} & \emph{Description} \\
+\hline 
+\hline
+\endfirsthead
+\multicolumn{2}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\emph{Metric} & \emph{Description} \\
+\hline 
+\hline
+\endhead
+\hline
+\multicolumn{2}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+
+WMC    &    Weighted methods per class \cite{Chidamber1994} \\
+DIT    &    Depth of Inheritance Tree \cite{Chidamber1994} \\
+NOC    &    Number of Children \cite{Chidamber1994} \\
+CBO    &    Coupling between object classes \cite{Chidamber1994} \\
+RFC    &    Response for a Class \cite{Chidamber1994} \\
+LCOM   &    Lack of cohesion in methods \cite{Chidamber1994} \\
+Ca     &    Afferent couplings \cite{Martin1994} \\
+Ce     &    Efferent couplings \cite{Martin1994} \\
+NPM    &    Number of Public Methods \cite{Bansiya2002} \\
+LCOM3  &    Lack of cohesion in methods \cite{Henderson-Sellers1995} \\
+LOC    &    Lines of Code \cite{Bansiya2002} \\
+DAM    &    Data Access Metric \cite{Bansiya2002} \\
+MOA    &    Measure of Aggregation \cite{Bansiya2002} \\
+MFA    &    Measure of Functional Abstraction \cite{Bansiya2002} \\
+CAM    &    Cohesion Among Methods of Class \cite{Bansiya2002} \\
+IC     &    Inheritance Coupling \cite{Tang} \\
+CBM    &    Coupling Between Methods \cite{Tang} \\
+AMC    &    Average Method Complexity \cite{Tang} \\
+MAX\textunderscore CC    &    Maximum McCabe's cyclomatic complexity \cite{McCabe1976} \\
+AVG\textunderscore CC    &    Average McCabe's cyclomatic complexity \cite{McCabe1976} \\
+\hline
+\end{longtable}
+\end{center}
+
+There is another sole dataset obtained from the same source as the previous 
+collection of datasets, with a very similar structure of data, the 
+\textit{Apache} dataset. It has the same origin and objective as its 
+predecessors.
+
+On the second cluster of datasets, the data comes from a total of 8 different
+Hadoop versions. Their original purpose is to train a search based fault 
+prediction system. 
+
+Similarly to Jureczko and Madeyski dataset \cite{Jureczko2010, MadeyskiJ2015},
+it uses: (1) WMC, (2) DIT, (3), NOC, (4) CBO, (5) RFC, (6) LCOM, (7) NOM, and
+(8) LOC; metrics to define each set.
+
+Regarding more information on the content of the datasets the next table (see
+Table~\ref{tab:metrics-description}) summarizes the number of samples on each 
+dataset and further valuable information, such as the absolute and
+relative number of deffects for those datasets.
+
+\begin{center}
+\begin{longtable}{ | c | c | c c c c | }
+\caption{Description of the Datasets} \label{tab:metrics-description} \\
+
+\hline
+\emph{Project} & \emph{Version} & 
+\emph{\#instances} & \emph{\#Non-Defective} & \emph{\#Defective} & \emph{\%Defective} \\
+\hline 
+\hline
+\endfirsthead
+\multicolumn{6}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\emph{Project} & \emph{Version} & 
+\emph{\#instances} & \emph{\#Non-Def} & \emph{\#Def} & \emph{\%Def} \\
+\hline
+\hline
+\endhead
+\hline
+\multicolumn{6}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+
+\multirow{5}{*}{ant} &  
+    1.3 &   125 &   105 &    20 &   16.00 \\
+&   1.4 &   178 &   138 &    40 &   22.47 \\ 
+&   1.5 &   293 &   261 &    32 &   10.92 \\
+&   1.6 &   351 &   259 &    92 &   26.21 \\
+&   1.7 &   745 &   579 &   166 &   22.28 \\
+
+\hline
+\multirow{1}{*}{apache} &  
+    -   &   191 &   107 &   84  &   43.98 \\
+
+\hline
+\multirow{4}{*}{camel} &   
+    1.0 &   339 &   326 &    13 &    3.83 \\
+&   1.2 &   608 &   392 &   216 &   35.52 \\
+&   1.4 &   872 &   727 &   145 &   16.62 \\
+&   1.6 &   965 &   777 &   188 &   19.48 \\
+
+\hline
+\multirow{8}{*}{hadoop} &
+    0.1 &   141 &    91 &    50 &   35.60 \\
+&   0.2 &   191 &   149 &    42 &   21.99 \\
+&   0.3 &   211 &   158 &    53 &   25.12 \\
+&   0.4 &   201 &   159 &    42 &   20.90 \\
+&   0.5 &   217 &   180 &    37 &   17.05 \\
+&   0.6 &   234 &   203 &    31 &   13.25 \\
+&   0.7 &   250 &   202 &    48 &   19.20 \\
+&   0.8 &   240 &   224 &    16 &    6.67 \\
+
+\hline
+\multirow{2}{*}{ivy} &   
+    1.4 &   241 &   225 &    16 &    6.63 \\
+&   2.0 &   352 &   312 &    40 &   11.36 \\
+
+\hline
+\multirow{5}{*}{jedit} & 
+    3.2 &   272 &   182 &    90 &   33.08 \\
+&   4.0 &   306 &   231 &    75 &   24.50 \\
+&   4.1 &   312 &   233 &    79 &   25.32 \\
+&   4.2 &   367 &   319 &    48 &   13.07 \\
+&   4.3 &   492 &   481 &    11 &    2.23 \\
+
+\hline
+\multirow{3}{*}{log4j} & 
+    1.0 &   135 &   101 &    34 &   25.18 \\
+&   1.1 &   109 &    72 &    37 &   33.94 \\
+&   1.2 &   205 &    16 &   189 &   92.19 \\
+
+\hline
+\multirow{3}{*}{synapse} &
+    1.0 &   157 &   141 &    16 &   10.19 \\
+&   1.1 &   222 &   162 &    60 &   27.02 \\
+&   1.2 &   256 &   170 &    86 &   33.59 \\
+
+\hline
+\multirow{4}{*}{xalan} & 
+    2.4 &   723 &   613 &   110 &   15.21 \\
+&   2.5 &   803 &   416 &   387 &   48.19 \\
+&   2.6 &   885 &   474 &   411 &   46.44 \\
+&   2.7 &   909 &    11 &   898 &   98.78 \\
+
+\hline
+\multirow{3}{*}{xerces} &
+    1.2 &   440 &   369 &    71 &   16.13 \\
+&   1.3 &   453 &   384 &    69 &   15.23 \\
+&   1.4 &   588 &   151 &   437 &   74.31 \\
+\hline
+
+\end{longtable}
+\end{center}
+
+The experiments of this paper use the latest version of the datasets 
+\textit{ant}, \textit{apache}, \textit{camel}, \textit{hadoop}, \textit{ivy},
+\textit{jedit}, \textit{log4j}, \textit{xalan} and \textit{xerces}; alongide
+all the available versions of the \textit{hadoop} dataset.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Supervised Classifiers}
+
+This work makes use of several supervised learning algorithms. The 
+experiments carried out use the following algorithms:
+
+\begin{description}
+    \item [Naive Bayes] (NB)~\cite{Mit97} is a classifier that works on 
+    conditional probabilities, uses the Bayes theorem to predict the class for 
+    each data input. Calculates the probability of a certain event, given prior 
+    knowledge. This classifier assigns a set of attributes 
+    $a_{1}, \ldots, a_{n}$ to a given class $C$ so that the probability of the 
+    class description value of the attributes instances is maximal: 
+    $P(C|a_{1}, \ldots, a_n)$. The probability of the hypothesis, given that 
+    the evidence is true, is the probability of the evidence, given the 
+    hypothesis is true, multiplied by the probability of the hypothesis; in 
+    relation to the probability of the evidence. See Eq.~\ref{eq:bayes}.
+    
+    \begin{equation}\label{eq:bayes}
+        P(H|E) = \frac{(E|H) * P(H)}{P(E)}
+    \end{equation}
+    
+    For this project it has been selected the Gaussian Naive Bayes to perform
+    the experimentation. Being \textit{Gaussian} means that the likelihood of
+    the features is assumed to be Gaussian. The formula is given by 
+    Eq.~\ref{eq:gaussian}.
+    
+    \begin{equation}\label{eq:gaussian}
+        P(x_{i}|y)=(\frac{1}{\sqrt{2\pi \sigma^{2}_{y}}})\exp{(-\frac{(x_{i} - \mu _{y})^2}{2\sigma^{2}_{y}})}
+    \end{equation}
+    
+    \item [CART] (Classification And Regression Trees)~\cite{Breiman1984} is a 
+    non-parametric decision tree, similar to \textbf{C4.5}~\cite{Quinlan1993}. 
+    The main difference is that this algorithm supports numerical target 
+    variables. In exchange, it cannot compute rule sets. CART constructs a two 
+    branch bifurcation of the most discriminating attribute, based on the
+    Gini index. It can generate either classification or regression trees - 
+    depends on the variable (categorical or numeric, respectively). 
+    \textit{Classification and Regression Trees} algorithm is more complex and 
+    time consuming than \textit{C4.5}'s since multiple trees need to be built 
+    and pruned, but trees are generally simpler~\cite{oates1997}.
+    
+    The implementation available in ~\cite{scikit-learn} is an optimised 
+    version of this algorithm, although it does not support categorical 
+    variables.
+    
+    \item [Nearest Centroid] classifier\cite{conformal2014}, or \textbf{Nearest 
+    Prototype} classifier, or \textbf{Rocchio classifier} for its similarity to 
+    an algorithm with the same name (see Eq.\ref{eq:rocchio}). 
+    
+    \begin{equation}\label{eq:rocchio}
+        \overrightarrow{Q_{m}} =  (a \cdot \overrightarrow{Q_{o}}) + (b \cdot 
+        \frac{1}{\lvert D_{r} \rvert} \cdot \sum_{\overrightarrow{D_{j}} \in 
+        D_{r}} \overrightarrow{D_{j}}) - (c \cdot \frac{1}{\lvert D_{nr} 
+        \rvert} \cdot \sum_{\overrightarrow{D_{k}} \in D_{nr}} 
+        \overrightarrow{D_{k}})
+    \end{equation}
+    
+    The labels of a given sample are assigned by evaluating the classes of 
+    training samples whose mean is closest to the evaluated point. The training 
+    procedure, given a labeled training set ${(\overrightarrow{x_{1}}, y_{1}), 
+    \ldots,  (\overrightarrow{x_{n}}, y_{n})}$ with class labels $y_{i} \in Y$, 
+    compute the per-class centroid with Eq.~\ref{eq:knntrain}.
+    
+    \begin{equation}\label{eq:knntrain}
+        \overrightarrow{\mu _{l}} = \frac{1}{\lvert C_{l} \rvert} \sum_{i \in 
+        C_{l}} \overrightarrow{x_{i}}
+    \end{equation}
+    
+    Where $C_{l}$ is the set of indices of samples belonging to class $l \in Y$.
+    The prediction functions, takes the class assigned to an observation 
+    $\overrightarrow{x}$ is Eq.~\ref{eq:knnpred}.
+    
+    \begin{equation}\label{eq:knnpred}
+        \overrightarrow{y} = argmin_{l \in Y} \lvert\lvert \overrightarrow{
+        \mu _{l}} - \overrightarrow{x} \rvert\rvert
+    \end{equation}
+
+\end{description}
+
+%Classifiers can be adapted to deal with  imbalance in different ways.
+%In this work, we have used the following base learners implemented in Weka:
+% C4.5 (implemented as J48) - weights yes
+% JRip weights - yes
+% Naive Bayes - weithgts yes
+% IB weights yes
+% logistic regression weights yes
+% NN weights yes
+% simpleCART -no
+% SMO weights - yes
+%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation Metrics}\label{sec:ev-metrics}
+
+Part of the process of applying a classification algorithm is to measure the 
+success and the results of the training. In order to do it, some rates can be 
+calculated out of the testing to the trained classifier. Here is where the 
+Confusion Matrix comes at hand.
+
+The Confusion Matrix (see Table~\ref{tab:conf-matrix}) allows us to summarize 
+the performance of a given classification algorithm, it is also the foundation 
+of many of the performance metrics used in classification by:
+
+% --> Confusion Matrix
+\begin{table}[h!]
+\centering
+\footnotesize
+\caption{Confusion Matrix for Binary Classification}
+\label{tab:conf-matrix}
+\begin{tabular}{c c | p{2.5cm} | p{2.5cm} }
+% ROW1
+  & & \multicolumn{2}{c}{\emph{Actual Class}}\\
+% ROW2
+  & &    \emph{Positive} & \emph{Negative} \\
+% ROW3
+  \hline
+  \multirow{4}{*}{\emph{Predicted Class}}
+  &\emph{Positive} & True Positive \newline ($TP$) & False Positive \newline ($FP$)\\
+% ROW 4
+  %\hline
+  \cline{2-4}
+  &\emph{Negative} & False Negative \newline ($FN$) & True Negative\newline ($TN$)\\
+\end{tabular}
+\end{table}
+
+\begin{description}
+ \item [True Positive (TP)] - Data is correctly classified as positive.
+ \item [True Negative (TN)] - Data is correctly classified as negative.
+ \item [False Positive (FP)] - Data being negative classified as positive.
+ \item [False Negative (FN)] - Data being positive classified as negative. 
+\end{description} 
+
+These specifications indicate that the input data should have a binary target: 
+one value that can be classified as \textit{positive} and a second value that
+can be classified as negative. From this statistical classification
+\footnote{Also know as error matrix.}, many performance measures can be 
+calculated.
+
+Some of the most widely used metrics, and the ones calculated in this paper are 
+the ones explained next.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Precision}    
+ 
+Also know as Positive Predictive Value (PPV). It is the relation 
+between the \textit{true positives} calculated and the overall positives
+detected by the classification algorithm (see Eq.~\ref{eq:ppv}).
+ 
+\begin{equation}\label{eq:ppv}
+    PPV = \frac{TP}{TP + FP} = 1 - FDR
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Recall} 
+
+Also known as sensitivity, hit rate, or True Positive 
+Rate (TPR). It stands for the relation between the \textit{true positives}
+calculated and the real number of positives (see Eq.~\ref{eq:tpr}).
+
+\begin{equation}\label{eq:tpr}
+    TPR = \frac{TP}{P} = \frac{TP}{TP + FN} = 1 - FNR
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Fall-out}
+
+Also called False Positive Rate (FPR). It is the probability of rejecting 
+(falsely) the null hypothesis\footnote{General statement or default position
+that there is no relationship between two measured phenomena or no
+association among groups.} for a particular test (see Eq.~\ref{eq:fpr}).
+
+\begin{equation}\label{eq:fpr}
+    FPR = \frac{FP}{N} = \frac{FP}{FP + TN} = 1 - TNR
+\end{equation}
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Balance Accuracy}
+
+It goes by the acronym BA. It is a metric generally used to evaluate how
+good is a (binary) classifier. It is a measure that comes in specially 
+handy for imbalanced datasets. Its formula is represented by the mean of
+\textit{sensitivity} and \textit{specificity} (see Eq.~\ref{eq:ba}).
+
+\begin{equation}\label{eq:ba}
+    BA = \frac{TPR + TNR}{2}
+\end{equation}
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{F-Measure} 
+ 
+Also known as $F_1$, or \textit{S\o rensen-Dice coefficient} (independently
+developed by Thorvald S\o rensen~\cite{sorensen1948} and Lee Raymond 
+Dice~\cite{dice1945}). It is the harmonic mean of precision and sensitivity, 
+the two previous measures, which measures accuracy (see Eq.~\ref{eq:f1}). It is 
+twice the relation of the multiplication between \textit{recall} and 
+\textit{precision} and their addition. It is commonly used in highly imbalanced 
+datasets. There are some criticism rewarding this measure, as it does not take 
+into account the \textit{True Negative} (\textit{TN}) cases.
+
+\begin{equation}\label{eq:f1}
+    F_1 = 2 \cdot \frac{PPV \cdot TPR}{PPV + TPR} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}
+\end{equation}
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+\subsection{MCC} 
+
+The Matthews Correlation Coefficient (MCC)~\cite{Matthews1975} or \textit{phi} 
+coefficient, a performance metric (see Eq.~\ref{eq:mcc}) that measures the 
+quality of a binary classification robust to the imbalance problem. Its range 
+values are  between -1 and +1, where -1 represents complete inconsistency 
+(disagreement), 0 indicates that the prediction is no better than a random 
+prediction; and +1 would be a perfect prediction.  
+
+\begin{equation}\label{eq:mcc}
+    MCC = \frac{TP \cdot TN - FP \cdot FN}{\sqrt{(TP + FP)(TP + FN)(TN + FP)(TN + FN)}}
+\end{equation}
+
+Other measures cannot be used when data is highly imbalanced, like 
+\textit{accuracy} (\textit{Acc}) (defined by Eq.~\ref{eq:accuracy}), as it does 
+not take into account the number of labels of different classes.
+
+\begin{equation}\label{eq:accuracy}
+    Acc = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Receiver Operating Characteristic Curve}\label{sec:roc}
+
+The Receiver Operating Characteristic (ROC)\cite{Fawcett2006} Curve represents 
+graphically the True Positive Rate (TPR) versus the False Positive Rate (FPR) 
+as shown in Figure~\ref{fig:roc}.
+
+\begin{figure}
+\centering
+\includegraphics[width=.4\textwidth]{roc} % width=9cm, height=6cm
+\caption{ROC Curve}
+\label{fig:roc}
+\end{figure}
+
+Once the curve is plotted, the more the curve gets similar to a slope of
+$TPR = FPR$ the more imbalance that can be found in the dataset. It provides
+graphical visualization of the results. 
+
+The Area Under the ROC Curve (AUC) is a quality measure between positive and 
+negative rates with a single value. This metric allows to compare models.
+
+An approximation to the function can be calculated with Eq~\ref{eq:auc}.
+
+\begin{equation}\label{eq:auc}
+    AUC = \frac{1 + TP_{r} - FP_{r}}{2}
+\end{equation}
+
+Three unbiased metrics, i.e., AUC, F-score (\cite{sorensen1948}, 
+\cite{dice1945}), Matthews Correlation Coefficient (MCC - \cite{Matthews1975}), 
+are used to evaluate the performance on imbalanced datasets.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results and discussion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Methodology}
+
+To answer the RQ in Section \ref{sec:aim-obj}, we run several experiments.
+First, we analyze the complexity metrics (see Section~\ref{sec:ecol}) from all 
+selected datasets (see Section~\ref{sec:datasets}). Then, we retrieve some
+analytical metrics (see Section~\ref{sec:ev-metrics}), applying K-fold Cross
+Validation to those datasets. Finally, we repeat the process applying some 
+under/oversampling techniques to the K-Fold process (see 
+Sections~\ref{sec:undersampling} and \ref{sec:oversampling}, respectively).
+
+As the final objective is to see how complexity metrics affect classification -
+and therefore the analytical metrics, a final section is going to summarize
+the results obtained and the conclusions drawn out of those measures and answer
+Research Questions 1 to 4.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Metrics Analysis}
+
+As it has been mentioned in \textit{Data Complexity Metrics} (see 
+Section ~\ref{sec:ecol}), the software package to calculate them is 
+available in R, ECoL\footnote{\url{https://github.com/lpfgarcia/ECoL/}}. 
+Therefore, it was  necessary to call it from the Python environment. 
+In order to do so, the package RServe, a client server implementation 
+for R workspace to execute functions from other environments like 
+Python, was used. In other words, this is a connector that allow us 
+to execute the ECoL complexity metrics functions.
+
+The code regarding this script can be found in the Appendix 
+\ref{chp:pythoncode}, section \ref{sec:rconnect}.
+
+Regarding the experiment's content and objective, it has been 
+implemented an script that requests the complexity metrics of a 
+dataset and then displays its values on graphs comparing the results. 
+
+The structure of the script tries to find and compare the complexity 
+metrics obtained from different datasets, to see if there is a 
+certain relation between metrics.
+
+There has been create a script (see simplification of the algorithm in
+Algorithm~\ref{alg:complexmetrics}) that connects to ECoL library in R
+and returns the complexity metrics of a certain dataset (see full 
+implementation of the script in Appendix~\ref{chp:pythoncode}, 
+Section~\ref{sec:exp-kfold-code}).
+
+\begin{breakablealgorithm}
+    \caption{Datasets Complexity Metrics Comparison}
+    \footnotesize
+    \label{alg:complexmetrics}
+    \begin{algorithmic}[1]
+        \Require $\mathcal{D}$ dataset
+        \Ensure $\mathcal{C}$ complexity metrics
+        \State con $\leftarrow$ connectEcol()
+        
+        \ForAll {set in $\mathcal{D}$}
+        	\State inputs, targets $\leftarrow$ getDataset(set)
+        	
+        	\State metrics $\leftarrow$ con.getMetrics(inputs, targets)
+        	
+        	\State $\mathcal{C}$.add(metrics)
+        \EndFor
+        
+    \State plotComparison($\mathcal{C}$)
+    \end{algorithmic}
+\end{breakablealgorithm}
+
+The results are also stored in CSV files, which can be represented
+as tables \ref{tab:complMetricsWholeDatasets_PROMISE} and
+\ref{tab:complMetricsWholeDatasets_PROMISE2}.
+
+The experiment has been repeated for two independents sets of 
+datasets (see Section~\ref{sec:datasets} for more details regarding
+the datasets and their content). The first experiment's results are
+summarized in the following table (see 
+table~\ref{tab:complMetricsWholeDatasets_PROMISE}), whereas the second
+experiment, regarding the Hadoop datasets is represented in 
+table~\ref{tab:complMetricsWholeDatasets_PROMISE2}.
+
+The obtained results are showed in the following figures: 
+(\ref{fig:balance}) balance, (\ref{fig:correlation}) correlation, 
+(\ref{fig:dimensionality}) dimensionality, (\ref{fig:linearity}) linearity,
+(\ref{fig:neighborhood}) neighborhood, (\ref{fig:network}) network,
+(\ref{fig:overlap}) overlap, and (\ref{fig:smoothness}) smoothness.
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\linewidth]{figures/balance-C1.png}
+        \caption{Balance C1}
+        \label{fig:balance-c1}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\linewidth]{figures/balance-C2.png}
+        \caption{Balance C2}
+        \label{fig:balance-c2}
+    \end{subfigure}
+    \caption{Balance Measures}
+    \label{fig:balance}
+\end{figure}
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/correlation-C2.png}
+        \caption{Correlation C2}
+        \label{fig:correlation-c2}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/correlation-C3.png}
+        \caption{Correlation C3}
+        \label{fig:correlation-c3}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/correlation-C4.png}
+        \caption{Correlation C4}
+        \label{fig:correlation-c4}
+    \end{subfigure}
+    \caption{Correlation Measures}
+    \label{fig:correlation}
+\end{figure}
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/dimensionality-T2.png}
+        \caption{Dimensionality T2}
+        \label{fig:dimensionality-t2}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/dimensionality-T3.png}
+        \caption{Dimensionality T3}
+        \label{fig:dimensionality-t3}
+    \end{subfigure}
+    \caption{Dimensionality Measures}
+    \label{fig:dimensionality}
+\end{figure}
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/linearity-L1.png}
+        \caption{Linearity L1}
+        \label{fig:linearity-l1}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/linearity-L2.png}
+        \caption{Linearity L2}
+        \label{fig:linearity-l2}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/linearity-L3.png}
+        \caption{Linearity L3}
+        \label{fig:linearity-l3}
+    \end{subfigure}
+    \caption{Linearity Measures}
+    \label{fig:linearity}
+\end{figure}
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/neighborhood-N1.png}
+        \caption{Neighborhood N1}
+        \label{fig:neighborhood-n1}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/neighborhood-N2.png}
+        \caption{Neighborhood N2}
+        \label{fig:neighborhood-n2}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/neighborhood-N3.png}
+        \caption{Neighborhood N3}
+        \label{fig:neighborhood-n3}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/neighborhood-N4.png}
+        \caption{Neighborhood N4}
+        \label{fig:neighborhood-n4}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/neighborhood-T1.png}
+        \caption{Neighborhood T1}
+        \label{fig:neighborhood-t1}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/neighborhood-LSC.png}
+        \caption{Neighborhood LSC}
+        \label{fig:neighborhood-lsc}
+    \end{subfigure}
+    \caption{Neighborhood Measures}
+    \label{fig:neighborhood}
+\end{figure}
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/network-Density.png}
+        \caption{Network Density}
+        \label{fig:network-density}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/network-ClsCoef.png}
+        \caption{Network ClsCoef}
+        \label{fig:network-clscoef}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/network-Hubs.png}
+        \caption{Network Hubs}
+        \label{fig:network-hubs}
+    \end{subfigure}
+    \caption{Network Measures}
+    \label{fig:network}
+\end{figure}
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/overlap-F1.png}
+        \caption{Overlap F1}
+        \label{fig:overlap-f1}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/overlap-F1v.png}
+        \caption{Overlap F1v}
+        \label{fig:overlap-f1v}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/overlap-F2.png}
+        \caption{Overlap F2}
+        \label{fig:overlap-f2}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/overlap-F3.png}
+        \caption{Overlap F3}
+        \label{fig:overlap-f3}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/overlap-F4.png}
+        \caption{Overlap F4}
+        \label{fig:overlap-f4}
+    \end{subfigure}
+    \caption{Overlap Measures}
+    \label{fig:overlap}
+\end{figure}
+
+%%%%%%%%%%
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/smoothness-S1.png}
+        \caption{Smoothness S1}
+        \label{fig:smoothness-s1}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/smoothness-S2.png}
+        \caption{Smoothness S2}
+        \label{fig:smoothness-s2}
+    \end{subfigure}
+\end{figure}
+\begin{figure}[h!]\ContinuedFloat
+    \centering
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/smoothness-S3.png}
+        \caption{Smoothness S3}
+        \label{fig:smoothness-s3}
+    \end{subfigure}
+    \begin{subfigure}{0.496\textwidth}
+        \includegraphics[width=0.99\textwidth]{figures/smoothness-S4.png}
+        \caption{Smoothness S4}
+        \label{fig:smoothness-s4}
+    \end{subfigure}
+    \caption{Smoothness Measures}
+    \label{fig:smoothness}
+\end{figure}
+
+This way it is easier to compare results through datasets and metrics. To see 
+the whole extent of the numerical values, see the tables at 
+Appendix~\ref{chp:tables}. The data is summarized in tables \ref{sec:compl-oo} 
+and \ref{sec:compl-hadoop}. To see the images in more detail (bigger) go to 
+Appendix~\ref{chp:figures}, Section~\ref{sec:fig-compl-metrics}.
+
+Further results are compared and discussed in Section~\ref{sec:compresults}.
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{K-fold on Metrics Analysis}\label{sec:exp-kfold}
+
+This experiment tries to find the impact of applying the K-fold 
+Cross-Validation. It is a widely extended technique in data science that brings 
+a solution to the problem of performing testing to a data set with no separate
+training data - a given data set should not be used for both training and 
+testing for the classifier, instead data can be divided so a portion is used
+for training and another separate portion for testing/validation. Cross 
+validation allows to estimate the performance of the model trained by the whole 
+dataset dividing it into folds of two types:
+
+\begin{description}
+    \item [Training set] Known data by the classifier, and used to train it. It 
+    represents $k - 1 / k$ parts of the original set.
+    \item [Testing set] Also known as validation set. Unknown data for the 
+    algorithm. Used to test the performance of the trained classifier. It 
+    usually is $1 / k$ of the original dataset.
+\end{description}
+
+The K-fold algorithm has a total of $k$ iterations, same as the number of folds 
+(parts/divisions) of the dataset. On each iteration, the \textit{testing 
+set} is rotated to another unused fold\footnote{The folds do not change 
+throughout the cross validation process.} of the data - no testing set is 
+repeated, which means that each fold is used once for \textit{testing} 
+purposes. 
+
+After all iterations, the performance of the classifier that would be obtained 
+by training with the whole dataset is estimated by doing the mean of the
+performances on each iteration of the algorithm. 
+
+The most common values for $k$ (folds) used in data science are 5 and 10. This 
+this experiment, $k$ has been selected as $k=5$, as a common value of $k$ was 
+needed for all experiments and some of the datasets did not have enough 
+samples for a larger value of $k$.
+
+The algorithm that analyzes the performance of each fold and the calculates 
+the mean performance can be simplified as the one explained in the 
+Algorithm~\ref{alg:kfold}.
+
+\begin{breakablealgorithm}
+    \caption{Metrics Analysis on K-fold}
+    \footnotesize
+    \label{alg:kfold}
+    \begin{algorithmic}[1]
+        \Require $\mathcal{D}$ dataset
+        \State inputs, targets $\leftarrow$ $\mathcal{D}$
+    
+        \State k $\leftarrow$ 5
+        \State kf $\leftarrow$ kfold(k)
+        \State splits $\leftarrow$ kf.split(inputs)
+        
+        \ForAll {$train_{i}$, $test_{i}$ in splits}
+        	\State $x_{train}$, $x_{test}$ $\leftarrow$ inputs.get($train_{i}$), inputs.get($test_{i}$)
+        	\State $y_{train}$, $y_{test}$ $\leftarrow$ targets.get($train_{i}$), targets.get($test_{i}$)
+        	
+        	\State clf $\leftarrow$ trainNetwork($x_{train}$, $y_{train}$)
+        	
+        	\State confusionMatrix($x_{test}$, $y_{test}$, clf)
+        \EndFor
+        \State calculateMeanPerformance(clf)
+    \end{algorithmic}
+\end{breakablealgorithm}
+
+The real script used for this experiment can be found in 
+Appendix~\ref{chp:pythoncode}, Section~\ref{sec:exp-kfold-code}. It basically
+separates a certain dataset into folds and calculates the analysis metrics
+for each fold, to later on compute the mean value of those metrics for the
+entire dataset.
+
+Thanks to the results of the results of the classifiers for each fold, first,
+the \textit{confusion matrix} is obtained and thereafter, some other metrics 
+are calculated (such as recall, MCC, etc.). Those metrics are then compared 
+using a table like tab~\ref{tab:kfold} or \ref{tab:kfold2}, for each specific
+dataset, to see the full extent of the comparison refer to 
+Section~\ref{sec:compresults}.
+
+Only two tables of the aforementioned resulting dataset tables have been 
+included in this document, as an example of the results obtained through the
+experiment.
+
+The first case is the table obtained from Apache dataset (see 
+Table~\ref{tab:kfold}).
+
+\begin{center}
+\begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
+\caption{K-Fold Metrics Tree Apache}\label{tab:kfold} \\
+
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endfirsthead
+\hline
+\multicolumn{9}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endhead
+\hline
+\multicolumn{9}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+
+\multirow{3}{*}{\textbf{1}} & \textbf{Naive Bayes} & 
+0.4286 & 0.1579 & 0.200  & 0.4789 & 0.2308 & -0.0548 & 0.4789 \\
+& \textbf{Decision Tree} & 
+0.8235 & 0.7368 & 0.1500 & 0.7934 & 0.7778 &  0.5915 & 0.7934 \\
+& \textbf{Nearest Centroid} &
+0.3333 & 0.3158 & 0.6000 & 0.3579 & 0.3243 & -0.2850 & 0.3579 \\
+\hline
+\multirow{3}{*}{\textbf{2}} & \textbf{Naive Bayes} & 
+0.5000 & 0.0800 & 0.1538 & 0.4631 & 0.1379 & -0.1142 & 0.4631 \\
+& \textbf{Decision Tree} & 
+0.8095 & 0.6800 & 0.3077 & 0.6862 & 0.7391 &  0.3552 & 0.6862 \\
+& \textbf{Nearest Centroid} &
+0.5000 & 0.1600 & 0.3077 & 0.4262 & 0.2424 & -0.1719 & 0.4262 \\
+\hline
+\multirow{3}{*}{\textbf{3}} & \textbf{Naive Bayes} & 
+0.5000 & 0.0909 & 0.1250 & 0.4830 & 0.1538 & -0.0548 & 0.4830 \\
+& \textbf{Decision Tree} & 
+0.8462 & 0.5000 & 0.1250 & 0.6875 & 0.6286 &  0.3903 & 0.6875  \\
+& \textbf{Nearest Centroid} &
+0.4000 & 0.1818 & 0.3750 & 0.4034 & 0.2500 & -0.2166 & 0.4034 \\
+\hline
+\multirow{3}{*}{\textbf{4}} & \textbf{Naive Bayes} & 
+0.3333 & 0.8182 & 0.6667 & 0.5758 & 0.4737 & 0.1515 & 0.5758 \\
+& \textbf{Decision Tree} & 
+0.5833 & 0.6364 & 0.1852 & 0.7256 & 0.6087 & 0.4402 & 0.7256 \\
+& \textbf{Nearest Centroid} &
+0.8000 & 0.7273 & 0.0741 & 0.8266 & 0.7619 & 0.6727 & 0.8266 \\
+\hline
+\multirow{3}{*}{\textbf{5}} & \textbf{Naive Bayes} & 
+0.3043 & 1.0000 & 0.5161 & 0.7419 & 0.4667 & 0.3838 & 0.7419 \\
+& \textbf{Decision Tree} & 
+0.5000 & 1.0000 & 0.2258 & 0.8871 & 0.6667 & 0.6222 & 0.8871 \\
+& \textbf{Nearest Centroid} &
+0.4545 & 0.7143 & 0.1935 & 0.7604 & 0.5556 & 0.4451 & 0.7604 \\
+\hline
+% Mean
+\multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
+0.4132 & 0.4294 & 0.3323 & 0.5485 & 0.2926 & 0.0623 & 0.5485 \\
+& \textbf{Decision Tree} & 
+0.7125 & 0.7106 & 0.1987 & 0.7560 & 0.6842 & 0.4799 & 0.7560 \\
+& \textbf{Nearest Centroid} &
+0.4976 & 0.4198 & 0.3101 & 0.5549 & 0.4268 & 0.0889 & 0.5549 \\
+\hline
+\end{longtable}
+\end{center}
+
+The second example is the table obtained on the experiment performed over the 
+Hadoop (v0.8) dataset (see Table~\ref{tab:kfold2}).
+
+\begin{center}
+\begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
+\caption{K-Fold Metrics Tree Hadoop 0.8}\label{tab:kfold2} \\
+
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endfirsthead
+\hline
+\multicolumn{9}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endhead
+\hline
+\multicolumn{9}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+
+\multirow{3}{*}{\textbf{1}} & \textbf{Naive Bayes} & 
+1.0000 & 0.1250 & 0.0000 & 0.5625 & 0.2222 & 0.3262  & 0.5625 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.0250 & 0.4875 & 0.0000 & -0.0652 & 0.4875 \\
+& \textbf{Nearest Centroid} &
+0.1667 & 1.0000 & 1.0000 & 0.5000 & 0.2857 & 0.0000  & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{2}} & \textbf{Naive Bayes} & 
+0.0000 & 0.0000 & 0.1064 & 0.4468 & 0.0000 & -0.0497 & 0.4468 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.1064 & 0.4468 & 0.0000 & -0.0497 & 0.4468 \\
+& \textbf{Nearest Centroid} &
+0.0208 & 1.0000 & 1.0000 & 0.5000 & 0.0408 & 0.0000 & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{3}} & \textbf{Naive Bayes} & 
+0.0000 & 0.0000 & 0.0851 & 0.4574 & 0.0000 & -0.0440 & 0.4574 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.0851 & 0.4574 & 0.0000 & -0.0440 & 0.4574 \\
+& \textbf{Nearest Centroid} &
+0.0208 & 1.0000 & 1.0000 & 0.5000 & 0.0408 &  0.0000 & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{4}} & \textbf{Naive Bayes} & 
+0.3333 & 0.2500 & 0.0455 & 0.6023 & 0.2857 &  0.2335 & 0.6023 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.0426 & 0.4787 & 0.0000 & -0.0304 & 0.4787 \\
+& \textbf{Nearest Centroid} &
+0.0000 & 0.0000 & 0.0227 & 0.4886 & 0.0000 & -0.0440 & 0.4886 \\
+\hline
+\multirow{3}{*}{\textbf{5}} & \textbf{Naive Bayes} & 
+0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 & 0.0000 & 0.5000 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 & 0.0000 & 0.5000 \\
+& \textbf{Nearest Centroid} &
+0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 & 0.0000 & 0.5000 \\
+\hline
+% Mean
+\multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
+0.26667 & 0.0750 & 0.0474 & 0.5138 & 0.1016 & 0.0932 & 0.5138 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.0484 & 0.4758 & 0.0000 & -0.0446 & 0.4758 \\
+& \textbf{Nearest Centroid} &
+0.0417 & 0.6000 & 0.6045 & 0.4977 & 0.0735 & -0.0088 & 0.4977 \\
+\hline
+\end{longtable}
+\end{center}
+
+The inner results of each fold are not evaluated when analyzing the results
+of the experiments, but that data could be used to understand how does
+imbalance exactly affect classification. The objective evaluated in this 
+paper is to see if the metrics obtained for each dataset have any relation with 
+the performance of the classifiers. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Filters affect Classification}
+
+After experimenting with K-folding, it is time to see if filters applied to
+the dataset have any effect on the quality of the trained classifier. In this 
+case it is carried out by applying imbalance filters to the folds in the
+datasets (see Section~\ref{sec:imbtechniques} for more information on 
+imbalance filters).
+
+The main target is, as the avid reader can guess, imbalanced datasets and how
+filters that affect imbalance also affect the performance and other metrics of 
+classifiers - results are going to be compared on Section~\ref{sec:compresults}.
+
+Out of all the aforementioned techniques (\ref{sec:imbtechniques}) available 
+for imbalanced datasets, only the two following techniques are going to be used 
+in the experiments:
+
+\begin{description}
+    \item [Undersampling] Removing samples from majority class.
+    \item [Oversampling] Creating new samples in the minority class.
+\end{description}
+
+These techniques have been selected as they are more than enough to see if
+classifiers are affected by them. These two techniques have been used in two 
+separate experiments.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Undersampling and $K$-fold on Classification}
+\label{sec:kfoldunder}
+
+For this experiment, one undersampling algorithm is applied 
+(\ref{nearmiss}) to see how folds are affected by removing majority class
+samples, and therefore, looking at how it impacts the classification algorithm 
+being used is . 
+
+The undersampling technique is not done on the whole dataset. Actually, the
+folds are the ones affected by this algorithm. That way, instead of removing the
+imbalance in the whole dataset, it is removed in each fold as necessary,
+as some folds might have different imbalance level: what might be the majority 
+class in the whole dataset can be the minority class of a certain fold.
+
+The value selected for K-fold Cross Validation is $k=5$. A simplification
+of the procedure followed by this experiment can be found in the Algorithm~\ref{alg:kfoldunder}.
+
+\begin{breakablealgorithm}
+    \caption{Undersampling and K-fold on classification performance}
+    \label{alg:kfoldunder}
+    \begin{algorithmic}[1]
+        \Require $\mathcal{D}$ dataset
+        \State inputs, targets $\leftarrow$ $\mathcal{D}$
+    
+        \State k $\leftarrow$ 5
+        \State kf $\leftarrow$ kfold(k)
+        \State splits $\leftarrow$ kf.split(inputs)
+        
+        \State samplingStrategy $\leftarrow$ {0:50, 1:50} \Comment{Binary class with a post undersampling distribution of 50-50}
+        \State randomState $\leftarrow$ 42
+        
+        \ForAll {$train_{i}$, $test_{i}$ in splits}
+        	\State $x_{train}$, $x_{test}$ $\leftarrow$ inputs.get($train_{i}$), inputs.get($test_{i}$)
+        	\State $y_{train}$, $y_{test}$ $\leftarrow$ targets.get($train_{i}$), targets.get($test_{i}$)
+        	
+        	\State X, Y = makeImbalance(
+        	\State \quad $x_{train}$, $y_{train}$,
+        	\State \quad samplingStrategy,
+        	\State \quad randomState
+        	\State )
+        	
+        	\State clf $\leftarrow$ classifier(NearMiss(2), GaussianNB())
+        	\State clf $\leftarrow$ trainNetwork(X, Y)
+        	
+        	\State confusionMatrix($x_{test}$, $y_{test}$, clf)
+        \EndFor
+        \State calculateMeanPerformance(clf)
+    \end{algorithmic}
+\end{breakablealgorithm}
+
+Just as before, more than one classification algorithm has been used to measure
+performance of the alterations done on the dataset - (1) Naive Bayes 
+(Gaussian); (2) Decision Tree; and (3) kNN Nearest Centroid.
+
+The experiment creates the same tables obtained in 
+experiment~\ref{sec:exp-kfold}, that is why sharing all the resulting tables of 
+this experiment would be unnecessary - the results evaluated in this paper
+can be found in Section~\ref{sec:compresults}. That is why only two of them 
+have been included into this document. The Apache dataset experiment (see 
+Table~\ref{tab:kfoldunder}).
+
+\begin{center}
+\begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
+\caption{K-Fold Metrics with Undersampling Results Apache}
+\label{tab:kfoldunder} 
+\\
+
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
+\emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
+\emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endfirsthead
+\hline
+\multicolumn{9}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
+\emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
+\emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endhead
+\hline
+\multicolumn{9}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+\hline
+
+\multirow{3}{*}{\textbf{1}} & \textbf{Naive Bayes} & 
+0.5556 & 0.8824 & 0.5455 & 0.6684 & 0.6818 &  0.3620 & 0.6684 \\
+& \textbf{Decision Tree} & 
+0.7000 & 0.8235 & 0.2727 & 0.7754 & 0.7568 &  0.5464 & 0.7754 \\
+& \textbf{Nearest Centroid} &
+0.4167 & 0.2941 & 0.3182 & 0.4880 & 0.3448 & -0.0259 & 0.4880 \\
+\hline
+\multirow{3}{*}{\textbf{2}} & \textbf{Naive Bayes} & 
+0.5500 & 0.7333 & 0.3913 & 0.6710 & 0.6286 &  0.3348 & 0.6710 \\
+& \textbf{Decision Tree} & 
+0.5500 & 0.7333 & 0.3913 & 0.6710 & 0.6286 &  0.3348 & 0.6710 \\
+& \textbf{Nearest Centroid} &
+0.3571 & 0.3333 & 0.3913 & 0.4710 & 0.3448 & -0.0587 & 0.4710  \\
+\hline
+\multirow{3}{*}{\textbf{3}} & \textbf{Naive Bayes} & 
+0.7586 & 0.8800 & 0.5385 & 0.6708 & 0.8148 & 0.3811 & 0.6708 \\
+& \textbf{Decision Tree} & 
+0.8421 & 0.6400 & 0.2308 & 0.7046 & 0.7273 & 0.3883 & 0.7046 \\
+& \textbf{Nearest Centroid} &
+0.7000 & 0.2800 & 0.2308 & 0.5246 & 0.4000 & 0.0530 & 0.5246 \\
+\hline
+\multirow{3}{*}{\textbf{4}} & \textbf{Naive Bayes} & 
+0.6667 & 0.7273 & 0.1481 & 0.7896 & 0.6957 & 0.5650 & 0.7896 \\
+& \textbf{Decision Tree} & 
+0.6667 & 0.7273 & 0.1481 & 0.7896 & 0.6957 & 0.5650 & 0.7896 \\
+& \textbf{Nearest Centroid} &
+0.3077 & 0.3636 & 0.3333 & 0.5152 & 0.3333 & 0.0290 & 0.5152 \\
+\hline
+\multirow{3}{*}{\textbf{5}} & \textbf{Naive Bayes} & 
+0.5000 & 0.5625 & 0.4091 & 0.5767 & 0.5294 & 0.1517 & 0.5767 \\
+& \textbf{Decision Tree} & 
+0.6316 & 0.7500 & 0.3182 & 0.7159 & 0.6857 & 0.4264 & 0.7159 \\
+& \textbf{Nearest Centroid} &
+0.5556 & 0.3125 & 0.1818 & 0.5653 & 0.4000 & 0.1518 & 0.5653 \\
+\hline
+\multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
+0.5928 & 0.6662 & 0.3917 & 0.6372 & 0.6059 & 0.2992 & 0.6372 \\
+& \textbf{Decision Tree} & 
+0.6781 & 0.7348 & 0.2722 & 0.7313 & 0.6988 & 0.4522 & 0.7313 \\
+& \textbf{Nearest Centroid} &
+0.4674 & 0.3167 & 0.2911 & 0.5128 & 0.3646 & 0.0298 & 0.5128 \\
+\hline
+\end{longtable}
+\end{center}
+
+And the result obtained on the same experiment for the Hadoop (v0.8)
+experiment (see Table~\ref{tab:kfoldunder2}).
+
+\begin{center}
+\begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
+\caption{K-Fold Metrics with Undersampling Results Hadoop 0.8}\label{tab:kfoldunder2} \\
+
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
+\emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
+\emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endfirsthead
+\hline
+\multicolumn{9}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
+\emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
+\emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endhead
+\hline
+\multicolumn{9}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+\hline
+
+\multirow{3}{*}{\textbf{1}} & \textbf{Naive Bayes} & 
+0.1429 & 0.5000 & 0.1304 & 0.6848 & 0.2222 &  0.2092 & 0.6848 \\
+& \textbf{Decision Tree} & 
+0.1053 & 1.0000 & 0.3696 & 0.8152 & 0.1905 &  0.2576 & 0.8152 \\
+& \textbf{Nearest Centroid} &
+0.0345 & 0.5000 & 0.6087 & 0.4457 & 0.0645 & -0.0444 & 0.4457 \\
+\hline
+\multirow{3}{*}{\textbf{2}} & \textbf{Naive Bayes} & 
+0.0000 & 0.0000 & 0.2667 & 0.3667 & 0.0000 & -0.1491 & 0.3667 \\
+& \textbf{Decision Tree} & 
+0.0833 & 0.3333 & 0.2444 & 0.5444 & 0.1333 &  0.0497 & 0.5444 \\
+& \textbf{Nearest Centroid} &
+0.0952 & 0.6667 & 0.4222 & 0.6222 & 0.1667 &  0.1193 & 0.6222 \\
+\hline
+\multirow{3}{*}{\textbf{3}} & \textbf{Naive Bayes} & 
+0.0833 & 0.5000 & 0.2391 & 0.6304 & 0.1429 &  0.1204 & 0.6304\\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.3261 & 0.3370 & 0.0000 & -0.1406 & 0.3370 \\
+& \textbf{Nearest Centroid} &
+0.0000 & 0.0000 & 0.4348 & 0.2826 & 0.0000 & -0.1762 & 0.2826 \\
+\hline
+\multirow{3}{*}{\textbf{4}} & \textbf{Naive Bayes} & 
+0.1333 & 0.3333 & 0.3095 & 0.5119 & 0.1905 &  0.0170 & 0.5119 \\
+& \textbf{Decision Tree} & 
+0.1765 & 0.5000 & 0.3333 & 0.5833 & 0.2609 &  0.1153 & 0.5833 \\
+& \textbf{Nearest Centroid} &
+0.0625 & 0.1667 & 0.3571 & 0.4048 & 0.0909 & -0.1336 & 0.4048 \\
+\hline
+\multirow{3}{*}{\textbf{5}} & \textbf{Naive Bayes} & 
+0.0000 & 0.0000 & 0.1556 & 0.4222 & 0.0000 & -0.1067 & 0.4222 \\
+& \textbf{Decision Tree} & 
+0.2000 & 0.6667 & 0.1778 & 0.7444 & 0.3077 &  0.2914 & 0.7444 \\
+& \textbf{Nearest Centroid} &
+0.0000 & 0.0000 & 0.2444 & 0.3778 & 0.0000 & -0.1408 & 0.3778 \\
+\hline
+\multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
+0.0719 & 0.2667 & 0.2203 & 0.5232 & 0.1111 &  0.0182 & 0.5232 \\
+& \textbf{Decision Tree} & 
+0.1130 & 0.5000 & 0.2902 & 0.6049 & 0.1785 &  0.1147 & 0.6049 \\
+& \textbf{Nearest Centroid} &
+0.0384 & 0.2667 & 0.4134 & 0.4266 & 0.0644 & -0.0751 & 0.4266 \\
+\hline
+\end{longtable}
+\end{center}
+
+As it has been mentioned in Section~\ref{nearmiss}, there are several versions
+of \textit{Near Miss} algorithm. For this experiment it has been used 
+\textit{version 2}. This undersampling algorithm selects the majority class
+samples with the least average distance to the 3 farthest minority class 
+samples.
+
+The analysis of the metrics obtained are in Section~\ref{sec:compresults}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Oversampling and K-fold on Classification}
+
+In this experiment, similarly to Section~\ref{sec:kfoldunder}, an imbalance 
+filter is included to the K-fold Cross Validation process. In this case, the 
+oversampling technique is implemented and is later on compared to other 
+experiment results (see Section~\ref{sec:compresults}).
+
+The technique has been applied to the different folds of the dataset, not to 
+the entire data. Once again, the dataset is divided into $k=5$ folds. 
+
+The logic of the experiment is summarized in the next script (see 
+Algorithm~\ref{alg:kfoldover}). The difference with the
+undersampling Algorithm~\ref{alg:kfoldunder} is that uses SMOTE technique (see 
+Section~\ref{smote}) instead of \textit{Near Miss} undersampling technique.
+
+\begin{breakablealgorithm}
+    \caption{Oversampling and K-fold on classification performance}
+    \footnotesize
+    \label{alg:kfoldover}
+    \begin{algorithmic}[1]
+        \Require $\mathcal{D}$ dataset
+        \State inputs, targets $\leftarrow$ $\mathcal{D}$
+    
+        \State k $\leftarrow$ 5
+        \State kf $\leftarrow$ kfold(k)
+        \State splits $\leftarrow$ kf.split(inputs)
+        
+        \ForAll {$train_{i}$, $test_{i}$ in splits}
+        	\State $x_{train}$, $x_{test}$ $\leftarrow$ inputs.get($train_{i}$), inputs.get($test_{i}$)
+        	\State $y_{train}$, $y_{test}$ $\leftarrow$ targets.get($train_{i}$), targets.get($test_{i}$)
+        	
+        	\State clf $\leftarrow$ classifier(SMOTE(), GaussianNB())
+        	\State clf $\leftarrow$ trainNetwork($x_{train}$, $y_{train}$)
+        	
+        	\State confusionMatrix($x_{test}$, $y_{test}$, clf)
+        \EndFor
+        \State calculateMeanPerformance(clf)
+    \end{algorithmic}
+\end{breakablealgorithm}
+
+The classifiers used for this experiment are - (1) Naive Bayes (Gaussian); 
+(2) Decision Tree; and (3) kNN Nearest Centroid.
+
+Not all the resulting tables can be shown, so only two examples have been 
+included. The first one is the result on the Apache dataset (see 
+Table~\ref{tab:kfoldover-apache}).
+
+\begin{center}
+\begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
+\caption{K-Fold Metrics with Oversampling Results Apache}
+\label{tab:kfoldover-apache} 
+\\
+
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
+\emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
+\emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endfirsthead
+\hline
+\multicolumn{9}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
+\emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
+\emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endhead
+\hline
+\multicolumn{9}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+
+\multirow{3}{*}{\textbf{1}} & \textbf{Naive Bayes} & 
+0.4286 & 0.1579 & 0.2000 & 0.4789 & 0.2308 & -0.0548 & 0.4789 \\
+& \textbf{Decision Tree} & 
+0.7222 & 0.6842 & 0.2500 & 0.7171 & 0.7027 &  0.4354 & 0.7171 \\
+& \textbf{Nearest Centroid} &
+0.3333 & 0.3158 & 0.6000 & 0.3579 & 0.3243 & -0.2850 & 0.3579 \\
+\hline
+\multirow{3}{*}{\textbf{2}} & \textbf{Naive Bayes} & 
+0.5000 & 0.0800 & 0.1538 & 0.4631 & 0.1379 & -0.1142 & 0.4631 \\
+& \textbf{Decision Tree} & 
+0.8889 & 0.6400 & 0.1538 & 0.7431 & 0.7442 &  0.4619 & 0.7431 \\
+& \textbf{Nearest Centroid} &
+0.5000 & 0.1600 & 0.3077 & 0.4262 & 0.2424 & -0.1719 & 0.4262 \\
+\hline
+\multirow{3}{*}{\textbf{3}} & \textbf{Naive Bayes} & 
+0.5000 & 0.0909 & 0.1250 & 0.4830 & 0.1538 & -0.0548 & 0.4830 \\
+& \textbf{Decision Tree} & 
+0.8000 & 0.5455 & 0.1875 & 0.6790 & 0.6486 &  0.3616 & 0.6790 \\
+& \textbf{Nearest Centroid} &
+0.4286 & 0.1364 & 0.2500 & 0.4432 & 0.2069 & -0.1447 & 0.4432 \\
+\hline
+\multirow{3}{*}{\textbf{4}} & \textbf{Naive Bayes} & 
+0.3333 & 0.8182 & 0.6667 & 0.5758 & 0.4737 &  0.1515 & 0.5758 \\
+& \textbf{Decision Tree} & 
+0.5385 & 0.6364 & 0.2222 & 0.7071 & 0.5833 &  0.3959 & 0.7071 \\
+& \textbf{Nearest Centroid} &
+0.6000 & 0.5455 & 0.1481 & 0.6987 & 0.5714 &  0.4092 & 0.6987 \\
+\hline
+\multirow{3}{*}{\textbf{5}} & \textbf{Naive Bayes} & 
+0.3182 & 1.0000 & 0.4839 & 0.7581 & 0.4828 & 0.4052 & 0.7581 \\
+& \textbf{Decision Tree} & 
+0.5000 & 1.0000 & 0.2258 & 0.8871 & 0.6667 & 0.6222 & 0.8871 \\
+& \textbf{Nearest Centroid} &
+0.4545 & 0.7143 & 0.1935 & 0.7604 & 0.5556 & 0.4451 & 0.7604 \\
+\hline
+% Mean
+\multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
+0.4160 & 0.4294 & 0.3259 & 0.5518 & 0.2958 & 0.0666 & 0.5518 \\
+& \textbf{Decision Tree} & 
+0.6899 & 0.7012 & 0.2079 & 0.7467 & 0.6691 & 0.4554 & 0.7467 \\
+& \textbf{Nearest Centroid} &
+0.4633 & 0.3744 & 0.2999 & 0.5373 & 0.3801 & 0.0505 & 0.5373 \\
+\hline
+
+\end{longtable}
+\end{center}
+
+The second example is the one from the Hadoop (v0.8) experiment (see 
+Table~\ref{tab:kfoldover-hadoop}).
+
+\begin{center}
+\begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
+\caption{K-Fold Metrics with Oversampling Results Hadoop 0.8}\label{tab:kfoldover-hadoop} \\
+
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endfirsthead
+\hline
+\multicolumn{9}{c}{\tablename\ \thetable\ -- \textit{Continued from previous page}} \\
+\hline
+\textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
+\hline
+\endhead
+\hline
+\multicolumn{9}{r}{\textit{Continued on next page}}
+\endfoot
+\hline
+\endlastfoot
+
+\multirow{3}{*}{\textbf{1}} & \textbf{Naive Bayes} & 
+0.1176 & 0.2500 & 0.3750 & 0.4375 & 0.1600 & -0.0974 & 0.4375 \\
+& \textbf{Decision Tree} & 
+0.2500 & 0.1250 & 0.0750 & 0.5250 & 0.1667 &  0.0674 & 0.5250 \\
+& \textbf{Nearest Centroid} &
+0.1667 & 1.0000 & 1.0000 & 0.5000 & 0.2857 &  0.0000 & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{2}} & \textbf{Naive Bayes} & 
+0.1000 & 1.0000 & 0.1915 & 0.9043 & 0.1818 &  0.2843 & 0.9043 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.4468 & 0.2766 & 0.0000 & -0.1286 & 0.2766 \\
+& \textbf{Nearest Centroid} &
+0.0208 & 1.0000 & 1.0000 & 0.5000 & 0.0408 &  0.0000 & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{3}} & \textbf{Naive Bayes} & 
+0.0000 & 0.0000 & 0.1915 & 0.4043 & 0.0000 & -0.0701 & 0.4043 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.1064 & 0.4468 & 0.0000 & -0.0497 & 0.4468 \\
+& \textbf{Nearest Centroid} &
+0.0208 & 1.0000 & 1.0000 & 0.5000 & 0.0408 &  0.0000 & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{4}} & \textbf{Naive Bayes} & 
+0.0667 & 0.5000 & 0.6364 & 0.4318 & 0.1176 & -0.0778 & 0.4318 \\
+& \textbf{Decision Tree} & 
+0.2500 & 0.2500 & 0.0682 & 0.5909 & 0.2500 &  0.1818 & 0.5909 \\
+& \textbf{Nearest Centroid} &
+0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 &  0.0000 & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{5}} & \textbf{Naive Bayes} & 
+0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 &  0.0000 & 0.5000 \\
+& \textbf{Decision Tree} & 
+0.0000 & 0.0000 & 0.0435 & 0.4783 & 0.0000 & -0.0435 & 0.4783 \\
+& \textbf{Nearest Centroid} &
+0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 &  0.0000 & 0.5000 \\
+\hline
+\multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
+0.0569 & 0.3500 & 0.2789 & 0.5356 & 0.0919 &  0.0078 & 0.5356 \\
+& \textbf{Decision Tree} & 
+0.1000 & 0.0750 & 0.1480 & 0.4635 & 0.0833 &  0.0055 & 0.4635 \\
+& \textbf{Nearest Centroid} &
+0.0417 & 0.6000 & 0.6000 & 0.5000 & 0.0735 &  0.0000 & 0.5000 \\
+\hline
+\end{longtable}
+\end{center}
+
+The analysis of the metrics obtained are in Section~\ref{sec:compresults}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Compare Results}\label{sec:compresults}
+
+In this part of the paper, we are going to analyze the results coming from the
+previous experiments. These are displayed in tables \ref{tab:all-metrics}, 
+\ref{tab:all-metrics2} and \ref{tab:all-metrics3}. 
+
+To answer RQ1 and RQ2 (\ref{q:rq1} and \ref{q:rq2}, respectively) we need to 
+observe, for example, the values from \textit{overlapping}, we assume that 
+there is a certain relation with the classification performance. For most cases 
+in our experimentation, the higher the overlapping rate, the less efficient the 
+classifier becomes. Of course, this assumption is not backed up by any 
+statistical experiment on the datasets and/or the classifiers, but it looking 
+at the results it looks right at first sight.
+
+For example, looking at the \textit{overlapping} measures, when 
+\textit{overlapping F1} is higher than 0.90, almost none of the classifiers is 
+able to surpass 0.5 in \textit{precision} score, something similar happens with 
+the \textit{recall} an \textit{fall-out} scores (all three measures indicate on 
+a relative value how many input samples are correctly predicted). It makes 
+sense once the reader realizes that the more interlaced the samples are (the 
+more \textit{overlapping}), it should be harder for a classifier to identify 
+what data belongs to each class (RQ2 - see \ref{q:rq2}).
+
+In a similar way, it \textit{linearity} measures (RQ1 - see \ref{q:rq1}) are 
+directly related to the performance of the classification algorithms. Having 
+high \textit{overlapping} measures means that the \textit{linearity} should be 
+smaller (it is harder to separate data using a linear function if data is 
+interlaced) - RQ2 (see \ref{q:rq2}). Therefore, the higher the 
+\textit{linearity} measures obtained, the higher the performance should be. No 
+examples of this behavior can be shown, as all the selected datasets seem to 
+have high \textit{overlapping} values.
+
+A third complexity metric that should be taken into account, regarding 
+classifiers performance, is \textit{balance} - (RQ1 and RQ3, \ref{q:rq1} and
+\ref{q:rq3}, respectively). Its measures try to approximate the level of 
+imbalance of a certain class. Therefore, the higher the measures' values, the 
+greater should be the gap between the number of samples from the majority and 
+minority class (all the datasets work with binary classes).
+
+It can be observed that the greater the imbalances, not only the results have 
+poor performance (less than 0.7 of \textit{precision}, and similarly with 
+\textit{recall} and \textit{fall-out} measures), but it also means that the 
+different classifiers have very different results on the same dataset. This can 
+be translated as, the performance on certain classifiers might depend on the 
+imbalance of a certain dataset (RQ2 - see \ref{q:rq2}).
+
+Taking a look at \textit{Balanced Accuracy} measure (useful for imbalanced 
+datasets, like the ones used for the experiments on this paper), it can be 
+observed that most of the classifiers do not behave as they should in either
+the positive or negative prediction. In example, all of the hadoop datasets,
+where the imbalance ratio (\textit{balance} measures) is not ideal, and the
+overlapping is too high. 
+
+Therefore, \textit{MCC}, as a measure to see the quality of a binary classifier
+should also be low - just like in hadoop datasets.
+
+As for this last observation, it could be assumed that filters that would reduce
+imbalance, should also be able to increase the performance of the classifiers.
+
+After some experimentation regarding this matter, no clear improvements have
+been noticed in any of the analytical measures. Furthermore, undersampling
+seems not to be a good technique when the number of samples is too low, as the
+number of samples in the resulting training dataset is not enough to obtain a
+good classifier. In some cases, it even reduces the performance.
+
+After using SMOTE oversampling technique, the \textit{Balanced Accuracy} metric
+seems to indicate that the classifier identified slightly better some of the 
+testing data samples, but the resulting classifier still does not meet the
+desired quality (\textit{MCC}).
+
+But, overall, the techniques applied do not seem to fix perfectly the problems
+arose from either imbalance or overlapped datasets. This topic is going to be
+further discussed in Section~\ref{sec:conclusions}, as well as some other 
+remarks about the selected classifiers and possible further experimentation on
+this topic.
+
+On trying to answer the final RQ, \textit{Do complexity metrics tell us 
+something about the quality of the dataset?} (see \ref{q:rq4}), we can assume 
+(looking at the results), they do. A dataset with bad quality could be 
+considered one that has high overlapping, imbalanced classes, etc. As the 
+results seem to indicate a relation between those values and the performance of
+the obtained classifier - as the analytical metrics tell us.
+
+\lhead{}
+
+\input{chapters/tables/bigtable-page1}
+\input{chapters/tables/bigtable-page2}
+\input{chapters/tables/bigtable-page3}
 

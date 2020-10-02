@@ -78,6 +78,7 @@
 \usepackage{moreverb}
 \usepackage{multicol}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{eurosym}
 %\usepackage{subfig} % subfigure is obsolete... 
 \usepackage{multirow}
@@ -401,6 +402,7 @@ hyperfootnotes=false,
 \usepackage{float}
 \floatstyle{plaintop} % optionally change the style of the new float
 \newfloat{codefloat}{H}{cod}[chapter]
+\usepackage{lscape}
 
 \lstdefinestyle{console}
 {
@@ -545,11 +547,33 @@ hyperfootnotes=false,
 % \newenvironment{bottomparagraph}{\par\vspace*{\fill}}{\clearemptydoublepage}
 
 % Add algorithms april 2014
-\usepackage[vlined,algochapter]{algorithm2e}
+%\usepackage[vlined,algochapter]{algorithm2e}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 % Make this compatible with older/newer versions of the package
 \providecommand{\DontPrintSemicolon}{\dontprintsemicolon}
 \providecommand{\SetAlgoLined}{\SetLine}
 
+\makeatletter
+\newenvironment{breakablealgorithm}
+  {% \begin{breakablealgorithm}
+   \begin{center}
+     \refstepcounter{algorithm}% New algorithm
+     \hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+     \renewcommand{\caption}[2][\relax]{% Make a new \caption
+       {\raggedright\textbf{\ALG@name~\thealgorithm} ##2\par}%
+       \ifx\relax##1\relax % #1 is \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+       \else % #1 is not \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+       \fi
+       \kern2pt\hrule\kern2pt
+     }
+  }{% \end{breakablealgorithm}
+     \kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+   \end{center}
+  }
+\makeatother
 
 
 % Add support for fonts at arbitrary sizes september 2014, for TFG's cover
