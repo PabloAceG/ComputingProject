@@ -281,7 +281,8 @@ experiments carried out use the following algorithms:
     The labels of a given sample are assigned by evaluating the classes of 
 	training samples whose mean is closest to the evaluated point. The training 
 	procedure, given a labeled training set ${(\overrightarrow{x_{1}}, y_{1}), 
-	\ldots,  (\overrightarrow{x_{n}}, y_{n})}$ with class labels $y_{i} \in Y$, compute the per-class centroid with Eq.~\ref{eq:knntrain}.
+	\ldots,  (\overrightarrow{x_{n}}, y_{n})}$ with class labels $y_{i} \in Y$, 
+	compute the per-class centroid with Eq.~\ref{eq:knntrain}.
     
     \begin{equation}\label{eq:knntrain}
         \overrightarrow{\mu _{l}} = \frac{1}{\lvert C_{l} \rvert} \sum_{i \in 
@@ -468,12 +469,12 @@ not take into account the number of labels of different classes.
 \subsection{Methodology}
 
 To answer the research questions stated in Section \ref{sec:aim-obj}, we run 
-several experiments. First, we analyze the complexity metrics (see 
+several experiments. First, we analyse the complexity metrics (see 
 Section~\ref{sec:ecol}) from all selected datasets (see 
 Section~\ref{sec:datasets}). Then, we retrieve some analytical metrics (see 
 Section~\ref{sec:ev-metrics}), applying $K$-fold Cross
 Validation to those datasets. Finally, we repeat the process applying some 
-under/oversampling techniques to the $K$-Fold process (see 
+under/oversampling techniques with $K$-CV (see 
 Sections~\ref{sec:undersampling} and~\ref{sec:oversampling}, respectively).
 
 As the final aim is to see how complexity metrics affect classification and 
@@ -482,7 +483,7 @@ results obtained and the conclusions drawn out of those measures and answer the
 research questions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Metrics Analysis}
+\subsection{Data Complexity Metrics Analysis}
 
 As it has been mentioned in \textit{Data Complexity Metrics} (see 
 Section ~\ref{sec:ecol}), the software package to calculate them is 
@@ -495,13 +496,12 @@ this is a connector that allow us to execute the \texttt{ECoL} complexity
 metrics functions. The source code regarding this connector can be found in the 
 Appendix~\ref{chp:pythoncode}, Section~\ref{sec:rconnect}.
 
-Regarding the experiment's content and objective, it was implemented a Python 
-script that requests the complexity metrics of a dataset and then displays its 
-values on graphs comparing the results. The structure of the script tries to 
-find and compare the complexity metrics obtained from different datasets to see 
-if there is a certain relation between metrics. To do so, a script was developed 
-(see Algorithm~\ref{alg:complexmetrics}) to connect Python to the ECoL library 
-in R and returns the complexity metrics of a certain dataset (see its full 
+The rest of the experimental work was implemented in a Python script. 
+The structure of the script tries to find and compare the complexity metrics 
+obtained from different datasets to see if there is a certain relation between 
+metrics. To do so, a script was developed (see 
+Algorithm~\ref{alg:complexmetrics}) to connect Python to the ECoL library in R 
+and returns the complexity metrics of a certain dataset (see its full 
 implementation in Appendix~\ref{chp:pythoncode}, 
 Section~\ref{sec:exp-kfold-code}).
 
@@ -771,8 +771,6 @@ Appendix~\ref{chp:figures}, Section~\ref{sec:fig-compl-metrics}.
 
 Further results are compared and discussed in Section~\ref{sec:compresults}.
 
-\newpage
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cross Validation Analysis}\label{sec:exp-kfold}
 
@@ -782,8 +780,8 @@ a solution to the problem of performing testing to a data set with no separate
 training data - the same instances in a given dataset should not be used for 
 both training and testing a classifier at the same time, instead data can be 
 divided so a portion is used for training and another separate portion for 
-testing/validation. Cross validation allows to estimate the performance of the 
-model trained by the whole dataset dividing it into $k$ folds as follows:
+testing/validation. Cross validation allows us to estimate the performance of 
+the model trained by the whole dataset dividing it into $k$ folds as follows:
 
 \begin{itemize}
     \item Training set which is known data by the classifier, and used to train 
@@ -995,11 +993,7 @@ After experimenting with cross-validation, we now focus on if filters applied
 to the dataset have any effect on the quality of the trained classifier. In this
 case, it is carried out by applying imbalance filters to the folds in the 
 datasets (see Section~\ref{sec:imbtechniques} for more information on imbalance 
-filters).
-
-Out of all the aforementioned techniques (\ref{sec:imbtechniques}) available for 
-imbalanced datasets, the following techniques are going to be used in the 
-experiments:
+filters). Here, the following techniques were used in the experiments:
 
 \begin{description}
     \item [Undersampling] Removing samples from majority class.
@@ -1067,7 +1061,7 @@ Table~\ref{tab:kfoldunder}).
 
 \begin{center}
 \begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
-\caption{Undersampling with Cross-validation Results --- Apache dataset}
+\caption{Cross-validation with Undersampling Results --- Apache dataset}
 \label{tab:kfoldunder} 
 \\
 \hline
@@ -1213,7 +1207,8 @@ of \textit{Near Miss} algorithm. For this experiment it was used \textit{version
 2}. This undersampling algorithm selects the majority class samples with the 
 least average distance to the 3 farthest minority class samples.
 
-The analysis of the metrics obtained are in Section~\ref{sec:compresults}.
+The analysis of the metrics obtained are discussed in 
+Section~\ref{sec:compresults}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Oversampling with Cross Validation}
@@ -1323,6 +1318,7 @@ Apache dataset (see Table~\ref{tab:kfoldover-apache}).
 & \textbf{Nearest Centroid} &
 0.4545 & 0.7143 & 0.1935 & 0.7604 & 0.5556 & 0.4451 & 0.7604 \\
 \hline
+\hline
 % Mean
 \multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
 0.4160 & 0.4294 & 0.3259 & 0.5518 & 0.2958 & 0.0666 & 0.5518 \\
@@ -1393,6 +1389,7 @@ Table~\ref{tab:kfoldover-hadoop}).
 & \textbf{Nearest Centroid} &
 0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 &  0.0000 & 0.5000 \\
 \hline
+\hline
 \multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
 0.0569 & 0.3500 & 0.2789 & 0.5356 & 0.0919 &  0.0078 & 0.5356 \\
 & \textbf{Decision Tree} & 
@@ -1406,47 +1403,53 @@ Table~\ref{tab:kfoldover-hadoop}).
 The analysis of the metrics obtained are in Section~\ref{sec:compresults}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Comparison of the Results and discussion}\label{sec:compresults}
+\subsection{Comparison of the Results and Discussion}\label{sec:compresults}
 
-In this section, we are going to analyze the results coming from the
-previous experiments. These are shown in Tables~\ref{tab:all-metrics}, 
-\ref{tab:all-metrics2} and~\ref{tab:all-metrics3}. 
+In this section, we analyze the results from the previous experiments. These are 
+shown in Tables~\ref{tab:all-metrics}, \ref{tab:all-metrics2} 
+and~\ref{tab:all-metrics3}. The RQ were as follows:
 
-To answer RQ1 and RQ2 (see Section~\ref{q:rq1} and \ref{q:rq2}, respectively) we 
-need to observe, for example, the values from \textit{overlapping}, we assume 
-that there is a certain relation with the classification performance. For most 
-cases in our experimentation, the higher the overlapping rate, the less 
-efficient the classifier becomes. Of course, this assumption is not backed up by
-any statistical experiment on the datasets and/or the classifiers, but it 
-looking at the results it looks right at first sight.
+\begin{itemize}
+    \item RQ1 How complexity metrics are correlated to the outcome of 
+	supervised algorithms?\label{q:rq1}
+    \item RQ2 How complexity metrics and imbalance are related?\label{q:rq2}
+    \item RQ3 Do complexity metrics tell us something about the quality of the 
+	datasets?\label{q:rq3}
+\end{itemize}
+
+To answer the RQ1 (see Section~\ref{q:rq1}) we need to observe, for example, the 
+values from \textit{overlapping}. We assume that there is a certain correlation 
+between overlapping and the classifiers' performance. For most cases in our 
+experimentation, the higher the overlapping rate, the less efficient the 
+classifier becomes. In this work, this assumption is not backed up by any 
+statistical test, but just looking at the results.
 
 For example, looking at the \textit{overlapping} measures, when 
 \textit{overlapping F1} is higher than 0.90, almost none of the classifiers is 
 able to surpass 0.5 in \textit{precision} score, something similar happens with 
-the \textit{recall} an \textit{fall-out} scores (all three measures indicate on 
+the \textit{recall} and \textit{fall-out} scores (all three measures indicate on 
 a relative value how many input samples are correctly predicted). It makes sense 
-once the reader realizes that the more interlaced the samples are (the more 
-\textit{overlapping}), it should be harder for a classifier to identify what 
-data belongs to each class (RQ2 - see \ref{q:rq2}).
+once to assume that the more interlaced the samples are (the more 
+\textit{overlapping}), the harder for a classifier to correctly predict its 
+class. 
 
-In a similar way, it \textit{linearity} measures (RQ1 - see \ref{q:rq1}) are 
-directly related to the performance of the classification algorithms. Having
-high \textit{overlapping} measures means that the \textit{linearity} should be 
+In a similar way, it \textit{linearity} measures are also directly related to 
+the performance of the classification algorithms. Having high 
+\textit{overlapping} measures means that the \textit{linearity} should be 
 smaller (it is harder to separate data using a linear function if data is 
-interlaced) - RQ2 (see \ref{q:rq2}). Therefore, the higher the 
-\textit{linearity} measures obtained, the higher the performance should be. No 
-examples of this behavior can be shown, as all the selected datasets seem to
-have high \textit{overlapping} values.
+interlaced). Therefore, the higher the \textit{linearity} measures obtained, the 
+higher the performance should be. % No examples of this behavior can be shown, 
+as all the selected datasets seem to have high \textit{overlapping} values.
 
 A third complexity metric that should be taken into account, regarding 
-classifiers performance, is \textit{balance} - (RQ1 and RQ3, \ref{q:rq1} 
-and~\ref{q:rq3}, respectively). Its measures try to approximate the level of 
+classifiers performance, is \textit{balance} - (RQ1 and RQ2, \ref{q:rq1} 
+and~\ref{q:rq2}, respectively). Its measures try to approximate the level of 
 imbalance of a certain class. Therefore, the higher the measures' values, the 
 greater should be the gap between the number of samples from the majority and 
 minority class (all the datasets work with binary classes).
 
-It can be observed that the greater the imbalances, not only the results have 
-poor performance (less than 0.7 of \textit{precision}, and similarly with 
+It can be observed that with large values of imbalance, not only the results 
+have poor performance (less than 0.7 of \textit{precision}, and similarly with 
 \textit{recall} and \textit{fall-out} measures), but it also means that the 
 different classifiers have very different results on the same dataset. This can 
 be translated as, the performance on certain classifiers might depend on the 
@@ -1459,10 +1462,9 @@ the Hadoop datasets, where the imbalance ratio (\textit{balance} measures) is
 not ideal, and the overlapping is too high. 
 
 Therefore, \textit{MCC}, as a measure to see the quality of a binary classifier 
-should also be low - just like in hadoop datasets.
-
-As for this last observation, it could be assumed that filters that would reduce
-imbalance, should also be able to increase the performance of the classifiers.
+should also be low - just like in the Hadoop datasets. As for this last 
+observation, it could be assumed that filters that would reduce imbalance, 
+should also be able to increase the performance of the classifiers.
 
 After some experimentation regarding this matter, no clear improvements have 
 been noticed in any of the analytical measures. Furthermore, undersampling 
@@ -1475,18 +1477,20 @@ seems to indicate that the classifier identified slightly better some of the
 testing data samples, but the resulting classifier still does not meet the 
 desired quality (\textit{MCC}).
 
-But, overall, the techniques applied do not seem to fix perfectly the problems 
-arose from either imbalance or overlapped datasets. This topic is going to be 
-further discussed in Section~\ref{sec:conclusions}, as well as some other 
-remarks about the selected classifiers and possible further experimentation on
-this topic.
+In general, it seems that the techniques applied do not seem to fix perfectly 
+the problems arose from either imbalance or overlapped datasets. This topic is 
+going to be further discussed in Section~\ref{sec:conclusions}, as well as some 
+other remarks about the selected classifiers and possible further 
+experimentation on this topic.
 
-On trying to answer the final RQ, \textit{Do complexity metrics tell us 
-something about the quality of the dataset?} (see \ref{q:rq4}), we can assume 
-(looking at the results), they do. A dataset with bad quality could be 
+On trying to answer the final RQ3, \textit{Do complexity metrics tell us 
+something about the quality of the dataset?} We can assume 
+(just looking at the results) that they do. A dataset with bad quality could be 
 considered one that has high overlapping, imbalanced classes, etc. As the 
 results seem to indicate a relation between those values and the performance of 
-the obtained classifier - as the analytical metrics tell us.
+the obtained classifier - as the analytical metrics tell us. This should tell us 
+that we need to explore ways to improve the data (feature engineering, collect 
+further attributes, etc.).
 
 \lhead{}
 

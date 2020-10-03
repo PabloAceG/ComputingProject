@@ -32,18 +32,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
 
-In this work, we analyzed complexity metrics, analytical metrics obtained from 
-the confusion matrix and some basic classifiers.
-
-To recapitulate, the following work was conduced through this dissertation:
+In this work, we analysed data complexity metrics, as well as analytical metrics 
+obtained from the confusion matrix and some basic classifiers. To recapitulate, 
+the following work was conduced through this dissertation:
 
 \begin{enumerate}
-    \item An introduction to Data complexity metrics, class imbalance and 
-    techniques to mitigate its effects, datasets used for the experimentation,
-    and analytical metrics (see Chapter~\ref{chp:background}, 
-    Sections~\ref{sec:datasets} and \ref{sec:ev-metrics}).
-    \item Python implementation of the experimentation (connecting to R's ECol
-    to obtain the complexity metrics) - see Section~\ref{sec:results}:
+    \item An introduction to \textit{data complexity metrics}, class imbalance 
+	and techniques to mitigate its effects, datasets used for the 
+	experimentation, and analytical metrics (see Chapter~\ref{chp:background}, 
+	Sections~\ref{sec:datasets} and \ref{sec:ev-metrics}).
+    \item Python implementation of the experimentation (connecting to R's 
+	\texttt{ECol} to obtain the complexity metrics) - see 
+	Section~\ref{sec:results}:
     \begin{itemize}
         \item Obtain the complexity metrics of the datasets.
         \item Calculate the analytical metrics of the datasets using K-fold.
@@ -53,25 +53,24 @@ To recapitulate, the following work was conduced through this dissertation:
     \item Analysis of the obtained results (see Section~\ref{sec:compresults}).
 \end{enumerate}
 
-The experiments carried out show that the datasets selected have many 
-\textit{problems} that go with them: \textit{imbalanced classes}, or 
-\textit{data overlapping} are some of them. This could be one of the reasons
-why the classifiers do not give the expected results.
+The experiments carried out showed that the datasets selected have many 
+\textit{problems} including \textit{imbalanced classes}, and data
+\textit{overlapping} are some of them. This could be one of the reasons
+why the classifiers do not achieve the expected results.
 
 It has also been tried out a few way to improve the classification in those 
 datasets, such as K-folding Cross Validation combined with Undersampling and
 Oversampling techniques. The result of those experiments led to the intuition
-that either the applied techniques are not fit to the datasets (do not manage
+that either the applied techniques are not fit for the datasets (do not manage
 to increase the performance); or that the classification algorithms selected
-do not perform as they were expected.
-
-To solve this, better datasets could be selected/generated, trying to reduce
-the value of metrics such as overlapping, and therefore maximize linearity;
-or reduce the imbalance of the class (see \ref{sec:futureWork} to know more
-proposals).Other option would be to use other Under/Oversampling techniques 
+do not perform as well as they were expected. To solve this, in addition to 
+further research, better datasets should be generated, trying to reduce the 
+value of metrics such as overlapping, and therefore maximize linearity; reduce 
+the class imbalance, etc. We also need to explore other balancing techniques 
 than the ones used for this paper.
 
-That means that the nature of the data might affect the results. 
+In summary, we observed that the nature of the data might affect the results and 
+this needs further explored in several path as stated next.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Future Work}\label{sec:futureWork}
@@ -93,5 +92,3 @@ interpretable machine learning \cite{molnar2019}.
 %%% Local Variables:
 %%% TeX-master: "../book"
 %%% End:
-
-
