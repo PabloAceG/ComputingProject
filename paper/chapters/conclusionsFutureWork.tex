@@ -69,6 +69,13 @@ value of metrics such as overlapping, and therefore maximize linearity; reduce
 the class imbalance, etc. We also need to explore other balancing techniques 
 than the ones used for this paper.
 
+It could also happen that the number of minority class samples are not only low,
+but that some folds might not get enough samples of that class - could be solved
+by increasing the number of samples collected for a certain dataset, or 
+redistributing the minority class through the folds. This would also explain
+why imbalance techniques are not able to improve the performance of the 
+classifiers
+
 In summary, we observed that the nature of the data might affect the results and 
 this needs further explored in several path as stated next.
 
