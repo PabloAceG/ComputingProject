@@ -34,9 +34,9 @@
 
 There are many complexity metrics that could be used for the scope of this 
 project, but it has been chosen the ones that are explained below; following 
-the metrics obtained from~\cite{BasuH2006}, and surveys by Lorena et 
-al~\cite{lorena2018,Lorena2019}. They are also implemented in the Extended 
-Complexity Metrics Library (ECoL) for R.
+the metrics obtained from~\cite{HoB2002}, and surveys by Lorena et 
+al~\cite{lorena2018,Lorena2019} (see also~\cite{BasuH2006}). They are also 
+implemented in the Extended Complexity Metrics Library (ECoL) for R.
 
 These are a set of measures that help characterizing the complexity of 
 classification and regression problems. The measures that are going to be 
@@ -45,13 +45,15 @@ computed for this project are:
 \begin{description}
     \item [Overlapping] Evaluate how informative the available features are to 
     separate the classes. See \ref{sec:overlap} for more details.
+    
     \item [Neighborhood] Characterize the presence and density of classes in 
     local neighborhoods. See \ref{sec:neighborhood} for more details.
+    
     \item [Linearity] Quantify, if it is possible, whether classes are linear 
     separable by a hyperplane or linear function. See \ref{sec:linearity} for 
     more details.
     \item [Dimensionality] Indicative of data sparsity, how smoothly samples are
-    distributed within attributes. See \ref{sec:dimesionality} for more details.
+    distributed within attributes. See \ref{sec:dimensionality} for more details.
     \item [Balance] Capture the difference in the number of examples per class 
     in the dataset. See \ref{sec:balance} for more details.
     \item [Network] Represents the dataset as a graph and extracts structural 
@@ -187,7 +189,7 @@ linear function is delimited.
 \subsubsection{Linear Separability (L1, L2, L3)}
 
 As a way to adapt to separable and non-separable problems, it is used the 
-formulation proposed by Smith\cite{FWSmith}, which minimizes an error function:
+formulation proposed by Smith~\cite{FWSmith}, which minimizes an error function:
 
 \begin{align*} 
  \text{minimize } a^{t}t \\
@@ -195,9 +197,9 @@ formulation proposed by Smith\cite{FWSmith}, which minimizes an error function:
  t \geq 0 
 \end{align*}
 
-Implying that a and b are vectors; w is the weight vector; t is the error 
-vector and Z is a matrix obtained by adding one dimension, with value one, to 
-the input vector x.
+Implying that $a$ and $b$ are vectors; $w$ is the weight vector; $t$ is the 
+error vector and $Z$ is a matrix obtained by adding one dimension, with value 
+one, to the input vector x.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Measures of Dimensionality}\label{sec:dimesionality}
@@ -224,16 +226,16 @@ the base of a data sparsity assessment.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Intrinsic dimensionality proportion (T4)}
 
-It represents a ratio of PCA Dimensions to the Original. It returns an estimate 
+It represents a ratio of PCA Dimensions to the original. It returns an estimate 
 of the proportion of relevant and original dimensions of the dataset.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Measures of Class Balance}\label{sec:balance}
 
-Given a certain dataset, \textit{balance} measures capture the differences in
-the number of samples per class for that dataset. When the imbalance ratio is 
+Given a dataset, \textit{balance measures} capture the differences in the number 
+of samples per class for that dataset. When the imbalance ratio is 
 too severe, problems related to generalization of classification techniques 
-could happen.
+can happen.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Entropy of class proportions (C1)}
@@ -253,8 +255,8 @@ suited for multi-class classification problems.
 
 These measures create a graph representation of the dataset to extract 
 structural information from it. The transformation between raw data and the
-graph representation is based on the epsilon-NN ($\varepsilon-NN$) algorithm.
-Afterwards, a post-processing step is applied to the graph, pruning edges
+graph representation is based on the epsilon-NN ($\varepsilon-NN$) algorithm. 
+Afterwards, a post-processing step is applied to the graph, pruning edges 
 between samples of opposite classes.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -306,13 +308,13 @@ process of linear fitting between the features and the target attribute.
 
 It is a regression task, used for regression problems. In those problems, the 
 smoother the function to be fitted, the simpler the task it becomes. Large 
-variations in input/output are an indication of the existence of more intricate
+variations in input/output are an indication of the existence of more intricate 
 relationships between them.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Output distribution (S1)}
 
-Checks if the samples joined in then MST have similar output values. The lower
+Checks if the samples joined in then MST have similar output values. The lower 
 the value, the simpler the problem - where outputs of similar samples in the 
 input space are also next to each other.
 
@@ -331,14 +333,13 @@ leave-one-out.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Non-linearity of nearest neighbor regressor (S4)}
 
-Computes the mean squared error of a 1-nearest neighbor regressor to the new 
+Computes the mean squared error of a $1$-NN regressor to the new 
 randomly interpolated points.
 
 \begin{center}
 \begin{scriptsize}
 \begin{longtable}{ | r | l | l | c | c | c | }
-\caption{Complexity Metrics from \cite{Lorena2019} and 
-\cite{Lorena2017}}\label{tab:all-metrics} \\
+\caption{Complexity Metrics from \cite{Lorena2019,Lorena2017}}\label{tab:all-metrics} \\
 
 \hline
 \textit{\textbf{Category}}        &
@@ -468,46 +469,30 @@ S3 & 0 & - & $O(n^2)$ \\
 \end{center}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Supervised Classification}
+\section{Supervised Methods}
 
-Machine Learning has different methods or styles available:
+There are mainly two achine Learning has different methods or styles available:
 
 \begin{description}
-    \item [Supervised] Trains itself on labeled data set.
-    \item [Unsupervised] Ingests unlabeled data and uses algorithms to extract 
-    meaningful features needed to label or sort data - without human
-    intervention.
+    \item [Supervised] classification trains a model using completely labeled 
+	dataset.
+    \item [Unsupervised] classification ingests unlabeled data to either create 
+	groups (clustering) or associate variables (e.g., association rules).
     \item [Semi-supervised] Uses smaller labeled dataset to set up a guide and 
     large amounts of unlabeled data for feature extraction
 \end{description}
 
-In this work, the only the first of them is used. Getting into more detail on
-supervised learning, it means that the machine learning model is built on
-data that has enough labeled information on how to determine and classify new
-incoming data.
-
-That could be the example of a model ready to identify dogs. Many images with 
-dogs, that would label the breed, and other characteristics, would be necessary 
-to differentiate an Alaskan Malamute from a Beagle.
-
-Now, it is true that this technique requires less input data to train a model,
-which make it easier to obtain a decent amount of data to train and test the
-model. Also, data can easily be tested, thanks to labeled data - which is a bit
-more expensive to generate than unlabelled data (for obvious reasons). There is
-also the danger of overfitting the model. It means that the model is too close
-to the training set. It is translated to a poor performance over slight 
-variations from new data.
+In this work, we focus only on the first one, supervised classification, i.e., a
+machine learning model is built on data that all instances have labeled 
+information on how to determine and classify new incoming data.
 
 In supervised learning, an optimal scenario is considered when the model is able
-to label correctly unseen data (which might come from a testing set or from new
-data).
-
-Other applications, that have not been mentioned so far, could be database 
-marketing, pattern recognition, spam detection, etc.
+to label correctly unseen data. 
 
 For this project, supervised learning is used more as a mean rather than as a 
-final goal. In this paper, it it more important what affects supervised 
-classification rather than classifying something.
+final goal, in the sense that it aims at exploring how some data quality 
+characteristics affect the performance of supervised classification rather than 
+trying to improve the performance itself. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Imbalance}
@@ -515,52 +500,52 @@ classification rather than classifying something.
 
 On any dataset obtained from a real world environment, there will be a class 
 within the target outputs that will be more predominant than the rest of the 
-classes. When the difference between the predominant class and the rest of the
-classes is not ``remarkable'' the dataset is called balanced. On the other 
-hand, the classes are imbalanced if the number of samples from one class vastly 
+classes. When the difference between the predominant class and the rest of the 
+classes is not ``remarkable'' the dataset is called balanced. On the other hand, 
+the classes are imbalanced if the number of samples from one class vastly 
 outnumbers the number of samples from the rest of the classes, this is called 
-the imbalance problem. This means, that not enough data from the minority 
-classes is available to train the algorithm.
+ imbalance problem. This means, that not enough data from the minority classes 
+ is available to train the algorithm.
 
 Even though it might seem as a trivial matter, having an overwhelming 
-amount of samples of just one of the classes means that the training algorithm 
-will overfit the data, and therefore result on a high classification error.
+amount of samples of just one of the classes means that usually algorithm will 
+be biased towards the majority class, failing to classify properly the rest of 
+the classes. 
 
 Most canonical classification algorithms (e.g. SVM, decision tree and neural
-networks) suffer from the \textit{majority class bias} - they perform nicely on 
-balanced datasets, but very few of them does under an imbalanced scenario.
-Since most of these learning processes are oriented to global accuracy, the
-resulting classifiers tend to have majority class bias. This is translated to an
-apparent good performance, that acts poorly on terms of accuracy in the minority
-class.
+networks) suffer from the \textit{majority class bias} - they perform nicely on
+balanced datasets, but very few of them does under an imbalanced scenario. 
+Since most of these learning processes are oriented to global accuracy, the 
+resulting classifiers tend to have majority class bias. This is translated to 
+an apparent good performance, that acts poorly on terms of accuracy in the 
+minority class.
 
-Typical attempts to eliminate this bias is by data re-sampling and re-weighting 
-through the learning process.
+%Typical attempts to eliminate this bias is by data re-sampling and 
+re-weighting through the learning process.
 
 All the aforementioned metrics about datasets (and some recommended for 
 imbalanced datasets) do not say how to mitigate its effects on classification 
-algorithms. The different approaches to achieve this goal - deal with 
-imbalanced data - are sampling techniques, cost-sensitive, ensemble approaches 
-or hybrid approaches. They are going to be briefly described in the incoming 
-sections.
+algorithms. The different approaches to achieve this goal - deal with imbalanced 
+data - are sampling techniques, cost-sensitive, ensemble approaches or hybrid
+approaches. They are going to be briefly described in the incoming sections.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sampling Techniques}
 \label{subsec:samlpingTech}
 
 Techniques that are classified as \textit{Sampling Techniques} are oversampling 
-and undersampling. These methods are based on the addition or removal of 
-instances of a given training dataset - as a pre-processing step. The process 
-of replicating or creating instances from a minority class towards a more 
-balanced distribution (number of samples of majority and minority class are
-more or less similar) is called Random OverSampling (ROS); whereas Random 
-Under-Sampling (RUS) is the procedure of removing instances from the majority 
-class to reduce the difference between the amount of samples of each class-.
+and undersampling (or upsampling and downsmapling). These methods are based on 
+the addition or removal of instances of a given training dataset. The process of
+replicating or creating instances from a minority class towards a more balanced
+distribution (number of samples of majority and minority class are more or less
+similar) is called Random OverSampling (ROS); whereas Random Under-Sampling 
+(RUS) is the procedure of removing instances from the majority class to reduce 
+the difference between the amount of samples of each class.
 
 Rather than using this early proposals, there can be found more sophisticated 
 approaches generating new artificial samples, rather than the replication of 
-already existing instances. Some of these proposals are going to be explained 
-in the following sections. 
+already existing instances. Some of these proposals are going to be explained in 
+the following sections. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Undersampling}\label{sec:undersampling}
@@ -576,37 +561,35 @@ It involves removing samples from the dataset until the data
 is balanced. The reasons to use under-sampling are usually related to practical 
 reasons, such as resource costs. The techniques presented are:
 
-\paragraph{Random Undersampling}
+\textbf{Undersampling} involves deleting samples from the majority class, with 
+or 
+without replacement. It is one of the early proposals to deal with imbalanced 
+datasets. Although it may alleviate the imbalance in the dataset, it may also 
+increase the variance of the classifier or discard meaningful samples from the 
+majority class.
 
-It involves deleting samples from the majority class, with or without 
-replacement.It is one of the early proposals to deal with imbalanced datasets.
-Although it may alleviate the imbalance in the dataset, it may also increase the
-variance of the classifier or discard meaningful samples from the majority 
-class.
+\textbf{Cluster Centroid} replaces a cluster of samples by the cluster centroid 
+of a \textit{K-means} algorithm. The number of clusters is set by the level of 
+undersampling.
 
-\paragraph{Cluster Centroid}
+\textbf{Near Miss}\label{nearmiss} refers to a collection of undersampling 
+methods that select samples based on the distance of the majority class samples 
+to the minority class samples~\cite{Zhang03}. There are three versions of this 
+algorithm: 
 
-It replaces a cluster of samples by the cluster centroid of a K-means 
-algorithm. The number of clusters is set by the level of undersampling.
-
-\paragraph{Near Miss}\label{nearmiss}
-
-Refers to a collection of undersampling methods that select samples based on 
-the distance of the majority class samples to the minority class 
-samples~\cite{Zhang03}. There are three versions of this algorithm: 
-(1) \textit{NearMiss-1} selects majority class samples with minimum average
-distance to three closest minority class samples; 
-(2) \textit{NearMiss-2} selects majority class examples with minimum average 
-distance to the three furthest minority class examples;
-(3) \textit{NearMiss-3} selects majority class examples with minimum distance 
-to each minority class example.
+\begin{enumerate}
+	\item \textit{NearMiss-1} selects majority class samples with minimum 
+	average distance to three closest minority class samples; 
+	\item \textit{NearMiss-2} selects majority class examples with minimum 
+	average distance to the three furthest minority class examples;
+	\item \textit{NearMiss-3} selects majority class examples with minimum 
+	distance to each minority class example.
+\end{enumerate}
 
 Among all the available techniques, \textit{Near Miss} has been the on used
-for this research.
-
-Other techniques that remove instances intelligently include the Edited Nearest
-Neighbor (ENN) and Wilson's Editing that remove instances in which close 
-neighbors belong to a  different class~\cite{wilson1972asymptotic}.
+for this research. Other techniques that remove instances intelligently include 
+the Edited Nearest Neighbor (ENN) and Wilson's Editing that remove instances in 
+which close neighbors belong to a  different class~\cite{wilson1972asymptotic}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Oversampling}\label{sec:oversampling}
@@ -618,36 +601,36 @@ neighbors belong to a  different class~\cite{wilson1972asymptotic}.
 \label{fig:oversampling}
 \end{figure}
 
-Most commonly used. It involves creating new data points from the already 
+It involves replicating or creating new data points from the already 
 existing data. The techniques analyzed are:
 
-\paragraph{Random Oversampling}. Involves copying supplementary data from the
-minority classes. It can be done more than once (actually, as many times as the
-developers sees fit). One of the early proposals regarding imbalanced datasets.
+\textbf{Oversampling} involves copying supplementary data from the minority 
+classes. It can be done more than once (actually, as many times as the 
+developers sees fit). One of the early proposals regarding imbalanced datasets. 
 It is robust, as it may randomly replace some of the samples from the minority 
 class.
 
-\paragraph{SMOTE}\label{smote}
+\textbf{SMOTE}\label{smote} (Synthetic Minority Oversampling 
+Technique~\cite{ChawlaBHK02}) is one of the most popular oversampling techniques. 
+It works by selecting samples close in the feature space. That means, that a 
+line is drawn between the samples in the feature space and the a new sample at a
+point along that line. It is effective because the samples from the minority 
+class created are plausible - relatively close in feature space to existing 
+samples from minority class. A downside of this technique is that samples are 
+created without looking at the majority class, meaning a possible overlapping of 
+classes.
 
-Acronym for Synthetic Minority Oversampling Technique~\cite{ChawlaBHK02}. 
-It is one of the most popular techniques used nowadays. It works by selecting 
-samples close in the feature space. That means, that a line is drawn between
-the samples in the feature space and the a new sample at a point along that 
-line. It is effective because the samples from the minority class created are
-plausible - relatively close in feature space to existing samples from minority 
-class. A downside of this technique is that samples are created without looking
-at the majority class, meaning a possible overlapping of classes.
-
-\paragraph{ADASYN}
-
-Acronym for ADaptative SYNthetic sampling algorithm. Build on SMOTE methodology.
-Shifts the importance of the classification boundary to those minority classes 
-which are difficult. Weights the most difficult to learn classes so that those
-have more importance when creating new data. ADASYN generates more synthetic 
-data in the minority class samples that are harder to learn.
+\textbf{ADASYN} (ADaptative SYNthetic) sampling algorithm was developed using 
+the SMOTE approach shifting the importance of the classification boundary to 
+those minority classes which are difficult. It weights the most difficult to 
+learn classes so that those have more importance when creating new data. In 
+other words, ADASYN generates more synthetic data in the minority class samples 
+that are harder to learn.
 
 The technique selected for this article is the SMOTE method, implemented by the 
-\textit{imblearn} Python package.
+\textit{imbalance-learn}
+\footnote{\url{https://imbalanced-learn.readthedocs.io/en/stable/}} Python 
+package.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Cost-Sensitive Classifiers}\label{subsec:costSensitive}
@@ -660,11 +643,11 @@ datasets by either:
     classifier algorithm allows it}.
     \item Resampling the training data according to the costs assigned to each 
     class in a predefined cost matrix.
-    \item Or generating a model that minimizes the expected cost\footnote{Can 
-    be obtained by multiplying the predicted probability distribution with the 
-    misclassification costs}. The idea behind this methodology is to penalize 
-    differently each type of error - in the specific case of binary 
-    classification, the false positives (FP) and false negatives (FN).
+    \item Or generating a model that minimizes the expected cost\footnote{It can 
+	be obtained by multiplying the predicted probability distribution with the 
+	misclassification costs}. The idea behind this methodology is to penalize 
+	differently each type of error - in the specific case of binary 
+	classification, the false positives (FP) and false negatives (FN).
 \end{enumerate}
 
 The problem with CSC is defining the cost matrix as there is no systematic 
@@ -680,10 +663,9 @@ objective of obtaining better predictions. They are typically classified as
 generalization.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Bagging}
 
-Bagging~\cite{Breiman96} (also known as Bootstrap aggregating) is a ensemble 
-technique that involves a base learner applied to multiple - equal size - 
+\textbf{Bagging}~\cite{Breiman96} (also known as Bootstrap aggregating) is a 
+ensemble technique that involves a base learner applied to multiple equal size 
 datasets. These datasets are created from the original data using bootstraping. 
 Predictions are made on voting of the individual predictions. 
 
@@ -691,29 +673,27 @@ An advantage of this technique is that it does not require to modify
 any aspect of the learning algorithm, taking advantage of the instability of 
 the base classifier to create diversity among individual ensembles - so that 
 individual members of the ensemble perform well in different regions of the 
-data.  
-
-If the output is robust to perturbation of the data (like is the case with
-nearest-neighbor (NN) classifiers) the performance drops.
+data. However, if the output is robust to perturbation of the data (like is the 
+case with nearest-neighbor -NN- classifiers) the performance drops and should 
+not be used with those base classifiers.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Boosting}
 
-Boosting techniques generate multiple models that complement each other. The
-final objective is to induce models that improve certain regions of the data,
-where previous induced models had low performance. This can be achieved by 
-increasing the weights of instances that have been wrongly classified. That 
-way, new learners focus on those regions. 
+\textbf{Boosting} techniques generate multiple models that complement each 
+other. The final objective is to induce models that improve certain regions of 
+the data, where previous induced models had low performance. This can be 
+achieved by increasing the weights of instances that have been wrongly 
+classified. That way, new learners focus on those regions. 
 
 Classification is based on a weighted voted among all members of the ensemble.
 One of the most popular boosting algorithms is AdaBoost.M1~\cite{Freund1996} 
-for classification. The set of training examples is assigned an equal weight 
-at the beginning and the weight of instances can be increased or decreased 
+for classification. The set of training examples is assigned an equal weight at 
+the beginning and the weight of instances can be increased or decreased 
 depending on the classification of the learner. The next iterations focus on 
 those instances with higher weights. AdaBoost.M1 can be applied to any base 
 learner.
 
-Models from ensembles are difficult to interpret (black box behavior), 
+Models from ensembles are difficult to interpret (black-box behavior), 
 comparing them to decision trees or rules providing explanation of their 
 decision making process.
 
@@ -724,58 +704,55 @@ There are other hybrid approaches that can be used. Like that ones that
 are going to be explained in the following section.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{SMOTEBoost}
 
-The SMOTEBoost tries to reduce the bias from the learning procedure due to 
+\textbf{SMOTEBoost} tries to reduce the bias from the learning procedure due to 
 the class imbalance, and increase the sampling weight for the minority class. 
-SMOTE~\cite{CBHK2002} is introduced in each round of boosting, which enables
-each learner to be able to sample more of the minority class cases, and
-learn better and broader decision regions for the minority class. 
+SMOTE~\cite{CBHK2002} is introduced in each round of boosting, which enables 
+each learner to be able to sample more of the minority class cases, and learn 
+better and broader decision regions for the minority class. 
 
 It also brings the benefit of enhancing the probability of selection for 
 the difficult minority class cases that are dominated by the majority class 
-points~\cite{CLHB2003}. The variation of boosting procedure of the SMOTEBoost
+points~\cite{CLHB2003}. The variation of boosting procedure of the SMOTEBoost 
 process is a variant of the AdaBoost.M2 procedure~\cite{FS1997}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{RUSBoost}
 
-The technique RUSBoost~\cite{Seiffert2010} uses the AdaBoost.M2. The 
-difference with SMOTEBoost is that RUSBoost applies Random Under Sampling 
-instead of SMOTE. The application of SMOTE at this point has two drawbacks that 
+\textbf{RUSBoost}~\cite{Seiffert2010} uses the AdaBoost.M2. The difference with 
+SMOTEBoost is that RUSBoost applies Random Under Sampling instead of SMOTE. The 
+application of SMOTE at this point has two drawbacks that 
 RUSBoost is designed to overcome:
 
 \begin{itemize}
-    \item Increases the complexity of the algorithm. SMOTE finds the $k$ 
+    \item It increases the complexity of the algorithm. SMOTE finds the $k$ 
     nearest neighbors of the minority class samples, and then extrapolates
     them to make new synthetic samples. RUS, on the other hand, simply deletes 
-    the majority class examples randomly.
-    \item RUS produces less training datasets (as it is an undersampling 
+	the majority class examples randomly.
+
+    \item RUS produces less training data (as it is an undersampling 
     technique, not like SMOTE, which is an oversampling technique). This can
     be translated into shorter model training times~\cite{Seiffert2010}.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{MetaCost}
 
-MetaCost~\cite{Domingos1999} is a combination of bagging with cost-sensitive 
-classification. The bagging part of the technique is used to relabel training 
-data so that each training example is assigned a prediction that minimizes the 
-expected cost for that instance. Based on the modified training data, MetaCost 
-induces a new classifier which provides information about how a decision was 
-reached.
+\textbf{MetaCost}~\cite{Domingos1999} is a combination of bagging with 
+cost-sensitive classification. The bagging part of the technique is used to 
+relabel training data so that each training example is assigned a prediction 
+that minimizes the expected cost for that instance. Based on the modified 
+training data, MetaCost induces a new classifier which provides information 
+about how a decision was reached.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Defect Prediction}\label{subsec:defectPrediction}
 
-Regarding the history of defect prediction, and final objective of this 
-article, many classification techniques have been proposed - statistics
-(regression~\cite{Bibi06}, and Support Vector Machines~\cite{Elish2008}, etc.),
-machine learning (classification trees~\cite{Khoshgoftaar02}), neural 
-networks~\cite{Khoshgoftaar97}), probability (Na\"ive Bayes~\cite{Menzies07b} 
-and Bayesian networks), ensembles of different techniques and meta-heuristics
-(ant colonies~\cite{Vandecruys2008}, etc.).
-
+Regarding the problem of software defect prediction, many techniques have been 
+proposed in the literature - statistical methods (regression~\cite{Bibi2008}, 
+and Support Vector Machines~\cite{Elish2008}, etc.), machine learning 
+(classification trees~\cite{Khoshgoftaar02}), neural 
+networks~\cite{Khoshgoftaar97}), probabilistic models 
+(Na\"ive Bayes~\cite{Menzies07b} and Bayesian networks), ensembles of different 
+techniques and meta-heuristics (ant colonies~\cite{Vandecruys2008}, etc). 
 Despite this fact, some discrepancies are found:
 
 \begin{itemize}
@@ -792,17 +769,17 @@ in Khoshgoftaar et al.~\cite{Khoshgoftaar03}).
 
 As it has been mentioned before, there is no classifier that behaves 
 consistently better. No technique is able to give a an outstanding performance 
-when evaluating classifiers. Some authors have compared performance of several
-measures (like Peng~\cite{Peng2009}, Peng et al.~\cite{Peng2010}, this papers
+when evaluating classifiers. Some authors have compared performance of several 
+measures (e.g., Peng~\cite{Peng2009}, Peng et al.~\cite{Peng2010}, this paper 
 actually propose performance metrics to evaluate merit of classification 
 algorithms and ranked classification algorithms, respectively).
 
-Further made on the subject comes from the hand of Lessman et al.~\cite{LBMP08}.
-This paper compared several classifiers, discussing performance metrics such 
-like $TP_r$ and $FP_r$. But finally advocated to use the AUC\footnote{Further 
-explained in Section~\ref{sec:roc}, Area Under the ROC curve} as the best 
-indicator for classifiers comparison. This results is known as sub-optimal for 
-highly imbalanced datasets.
+Further analysis on the subject comes from the hand of Lessman et 
+al.~\cite{LBMP08}. This paper compared several classifiers, discussing 
+performance metrics such like $TP_r$ and $FP_r$. But finally advocated to use 
+the AUC\footnote{Further explained in Section~\ref{sec:roc}, Area Under the ROC 
+Curve} as a good indicator for classifiers comparison. This results is known as 
+sub-optimal for highly imbalanced datasets.
 
 Arisholm et al.~\cite{Arisholm10} compared different classification
 algorithms (tree algorithm (C4.5), coverage rule algorithm (PART), logistic 
@@ -816,6 +793,6 @@ regression, back-propagation neural networks and Support Vector Machines) over
 \end{itemize}
 
 The conclusion was that large differences can be achieved depending on the 
-comparison criteria of the data. To solve this problem, the paper proposed
-a new AUC based, cost-effectiveness metric. Same approach has been evaluated 
-and explored in Mende and Koschke~\cite{Mende10}.
+comparison criteria of the data. To solve this problem, the paper proposed a 
+new AUC based, cost-effectiveness metric. Same approach has been evaluated and 
+explored in Mende and Koschke~\cite{Mende10}.

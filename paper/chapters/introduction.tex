@@ -32,44 +32,46 @@
 \%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction to Machine Learning}
 
-Through time, humans wanted to keep all memories or thoughts precious to them
+Through time, humans wanted to keep all memories or thoughts precious to them 
 for posterity. Thanks to some technological advancements, larges amounts of 
 information can be stored for a relatively cheap price - videos, photographs, 
 drawings, weather measures, financial information, academic data, etc. It can 
-all be digitalized and kept \textit{forever}. 
+all be digitalized and kept \textit{forever}. These new possibilities also 
+brought new challenges. \textit{What to do with all that information?} Data 
+scientists try to manage and make some sense out of the overwhelming new 
+information that is being continuously created.
 
-These new possibilities also brought new challenges. \textit{What to do with all 
-that information?} Data scientist were born to try to manage and make some sense
-out of the overwhelming new information being created.
+The figure of a data scientist is the one who uses scientific methods, 
+processes, algorithms and systems to extract knowledge from structured and 
+unstructured data. The algorithms used in data science, are sequences of 
+statistical processing steps. Then, there is Machine Learning which uses 
+computer algorithms that improve through experience - it is also a subset of 
+Artificial Intelligence (AI). In this case, the algorithms are \textit{trained}
+to filter and discover patterns and features with massive amounts of data. 
 
-The figure of a data scientist is that who uses scientific methods, processes, 
-algorithms and systems to extract knowledge from structured and unstructured 
-data. The algorithms used in data science, are sequences of statistical 
-processing steps. Then, there is Machine Learning which uses computer algorithms 
-that improve through experience - it is also a subset of Artificial Intelligence 
-(AI). In this case, the algorithms are \textit{trained} to filter and 
-separate patterns and features with massive amounts of data. 
+The training and learning processes allow us to make predictions and decisions 
+for new data, being advantageous for almost any field: commercial purposes, 
+fraud detection, fault prediction, health, environment (climate), network 
+traffic, and so on.
 
-The training and learning processes allow to make predictions and decisions for 
-new data, being advantageous for almost any field: commercial purposes, fraud 
-prediction, plant caring, network traffic, and so on.
+The number of machine learning tools/techniques applied in this project is 
+quite large and those are further explained in the \textit{Background} section 
+(see Section~\ref{chp:background}). As a brief introduction to the techniques 
+and material in this paper, it has been used \textit{ECoL} R package to obtain 
+the complexity metrics of several datasets; the Python's \textit{scikit-learn} 
+package for learning algorithms and some performance metrics for the 
+classification algorithms (used through the experiments); as well as the 
+\textit{imbalanced-learn} Python package to deal with imbalanced datasets. The 
+resulting scripts allow us the visualization between different tables and plots
+for comparing results.
 
-The machine learning tools applied to this project are numerous, and they are
-going to be further explained in the \textit{Background} section (see 
-Section~\ref{chp:background}). As a brief introduction to the techniques and 
-material in this paper, it has been used \textit{ECoL} R package to obtain the 
-complexity metrics of several datasets; the Python's \textit{sklearn} package 
-for learning algorithms and some analytical metrics (used through the 
-experiments); as well as the \textit{imbalanced-learn} Python package to deal 
-with imbalanced datasets. The resulting scripts allow the visualization between 
-different tables and - plots for comparing results.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Aim and Objectives}\label{sec:aim-obj}
 
 Here we analyze the complexity metrics proposed by Ho and Basu~\cite{HoB2002} 
 in a number of software defect datasets, that have been previously implemented 
-in \textit{ECoL} R package.
+in \texttt{ECoL} R package.
 
 The aim of this work is to explore complexity metrics on software defect 
 datasets. Also, to analyze how classification algorithms are affected by 
@@ -79,18 +81,17 @@ previously analyzed. To do so, we explore several objectives:
 \begin{itemize}
     \item RQ1 Which complexity metrics are related to miss-classification?
     \label{q:rq1}
-    \item RQ2 How complexity metrics are correlated to the outcome of supervised 
-    algorithms?\label{q:rq2}
+    \item RQ2 How complexity metrics are correlated to the outcome of 
+	supervised algorithms?\label{q:rq2}
     \item RQ3 How complexity metrics and imbalance are related?\label{q:rq3}
-A    \item RQ4 Do complexity metrics tell us something about the quality of the 
-    datasets?\label{q:rq4}
+    \item RQ4 Do complexity metrics tell us something about the quality of the 
+	datasets?\label{q:rq4}
 \end{itemize}
 
-The purpose of this dissertation is to conduct a study of complexity metrics
-and imbalanced datasets. A comparison between the \textit{raw} data and 
-that data after performing some changes that should affect the results: 
-K-folding Cross Validation, Imbalanced techniques, etc.
-
+The purpose of this dissertation is to conduct a study of complexity metrics 
+and imbalanced datasets. A comparison between the \textit{raw} data and that 
+data after performing some changes that should affect the results: $K$-folding 
+Cross Validation (CV), imbalanced techniques, etc.
 
 %%% Local Variables:
 %%% TeX-master: "../book"

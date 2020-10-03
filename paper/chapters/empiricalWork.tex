@@ -29,18 +29,19 @@
 
 \chapter{Empirical Work}\label{chp:empwork}
 
-In this section is about the experimental work carried out through this 
-research. Firstly, describes the datasets used for the experimentation;
-then, the supervised classifiers evaluated; the evaluation metrics chosen; and 
-finally, present and discuss the results.
+In this chapter, we cover the experimental work carried out. Firstly, we 
+describe the datasets used for the experimentation; then, the supervised 
+classifiers evaluated; the evaluation metrics chosen; and finally, present and 
+discuss the results.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Datasets}\label{sec:datasets}
 
-In this work, publicly available datasets are going to be used, in the domain 
-of Software defect prediction: use of Jureczko and Madeyski dataset
+In this work, publicly available datasets in the domain of Software defect 
+prediction were used, were used, the Jureczko and Madeyski dataset
 \footnote{\url{http://snow.iiar.pwr.wroc.pl:8080/MetricsRepo/}} 
-\cite{Jureczko2010, MadeyskiJ2015} and the Harman Search Base dataset
+\cite{Jureczko2010, MadeyskiJ2015}, the Apache dataset 
+(\cite{Zimmermann07Eclipse}) and the Harman Search Base dataset 
 \cite{Harman2014ssbse}. 
 
 From the first cluster of datasets, 15 open source projects are the ones chosen 
@@ -52,9 +53,9 @@ researches, \cite{Xu2018, Wang2016, Xia2016}, which allows comparing and
 analyzing the obtained results.
 
 A sample can be considered as \textit{defective} when the number of defects 
-inside the class is more than 0. Similarly, if the number of defects is indeed
-0, then the class is \textit{non-defective}. This allows a binary 
-classification, making easier handling results, operations and comparisons.
+inside the class is more than 0. Similarly, if the number of defects is 0, then 
+the class is \textit{non-defective}. This allows a binary classification, making 
+easier handling results, operations and comparisons.
 
 \begin{center}
 \begin{longtable}{ | l | l | }
@@ -76,7 +77,6 @@ classification, making easier handling results, operations and comparisons.
 \endfoot
 \hline
 \endlastfoot
-
 WMC    &    Weighted methods per class \cite{Chidamber1994} \\
 DIT    &    Depth of Inheritance Tree \cite{Chidamber1994} \\
 NOC    &    Number of Children \cite{Chidamber1994} \\
@@ -106,18 +106,18 @@ collection of datasets, with a very similar structure of data, the
 \textit{Apache} dataset. It has the same origin and objective as its 
 predecessors.
 
-On the second cluster of datasets, the data comes from a total of 8 different
+On the second cluster of datasets, the data comes from a total of 8 different 
 Hadoop versions. Their original purpose is to train a search based fault 
 prediction system. 
 
-Similarly to Jureczko and Madeyski dataset \cite{Jureczko2010, MadeyskiJ2015},
-it uses: (1) WMC, (2) DIT, (3), NOC, (4) CBO, (5) RFC, (6) LCOM, (7) NOM, and
-(8) LOC; metrics to define each set.
+Similarly to Jureczko and Madeyski dataset \cite{Jureczko2010, MadeyskiJ2015}, 
+it uses: (1) WMC, (2) DIT, (3), NOC, (4) CBO, (5) RFC, (6) LCOM, (7) NOM, and 
+(8) LOC; metrics to define each dataset.
 
-Regarding more information on the content of the datasets the next table (see
+Regarding more information on the content of the datasets the next table (see 
 Table~\ref{tab:metrics-description}) summarizes the number of samples on each 
-dataset and further valuable information, such as the absolute and
-relative number of deffects for those datasets.
+dataset and further valuable information, such as the absolute and relative 
+number of defects for those datasets.
 
 \begin{center}
 \begin{longtable}{ | c | c | c c c c | }
@@ -226,47 +226,49 @@ experiments carried out use the following algorithms:
 
 \begin{description}
     \item [Naive Bayes] (NB)~\cite{Mit97} is a classifier that works on 
-    conditional probabilities, uses the Bayes theorem to predict the class for 
-    each data input. Calculates the probability of a certain event, given prior 
-    knowledge. This classifier assigns a set of attributes 
-    $a_{1}, \ldots, a_{n}$ to a given class $C$ so that the probability of the 
-    class description value of the attributes instances is maximal: 
-    $P(C|a_{1}, \ldots, a_n)$. The probability of the hypothesis, given that 
-    the evidence is true, is the probability of the evidence, given the 
-    hypothesis is true, multiplied by the probability of the hypothesis; in 
-    relation to the probability of the evidence. See Eq.~\ref{eq:bayes}.
+	conditional probabilities, uses the Bayes theorem to predict the class for 
+	each data input. Calculates the probability of a certain event, given prior 
+	knowledge. This classifier assigns a set of attributes $a_{1}, \ldots, 
+	a_{n}$ to a given class $C$ so that the probability of the class description 
+	value of the attributes instances is maximal: $P(C|a_{1}, \ldots, a_n)$. The 
+	probability of the hypothesis, given that the evidence is true, is the 
+	probability of the evidence, given the hypothesis is true, multiplied by the 
+	probability of the hypothesis; in relation to the probability of the 
+	evidence. See Eq.~\ref{eq:bayes}.
     
     \begin{equation}\label{eq:bayes}
         P(H|E) = \frac{(E|H) * P(H)}{P(E)}
     \end{equation}
     
-    For this project it has been selected the Gaussian Naive Bayes to perform
-    the experimentation. Being \textit{Gaussian} means that the likelihood of
-    the features is assumed to be Gaussian. The formula is given by 
-    Eq.~\ref{eq:gaussian}.
+    For this project it has been selected the Gaussian Naive Bayes from 
+	\texttt{scikit-learn}
+	\footnote{\url{https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html}} 
+	to perform the experimentation. Being \textit{Gaussian} means that the 
+	likelihood of the features is assumed to be Gaussian. The formula is given 
+	by Eq.~\ref{eq:gaussian}.
     
     \begin{equation}\label{eq:gaussian}
         P(x_{i}|y)=(\frac{1}{\sqrt{2\pi \sigma^{2}_{y}}})\exp{(-\frac{(x_{i} - \mu _{y})^2}{2\sigma^{2}_{y}})}
     \end{equation}
     
-    \item [CART] (Classification And Regression Trees)~\cite{Breiman1984} is a 
-    non-parametric decision tree, similar to \textbf{C4.5}~\cite{Quinlan1993}. 
-    The main difference is that this algorithm supports numerical target 
-    variables. In exchange, it cannot compute rule sets. CART constructs a two 
-    branch bifurcation of the most discriminating attribute, based on the
-    Gini index. It can generate either classification or regression trees - 
-    depends on the variable (categorical or numeric, respectively). 
-    \textit{Classification and Regression Trees} algorithm is more complex and 
-    time consuming than \textit{C4.5}'s since multiple trees need to be built 
-    and pruned, but trees are generally simpler~\cite{oates1997}.
+    \item [Decision Trees] can be seen as rules with a root node, branches are 
+	conditions and leaves correspond to classes. There are many decision trees 
+	algorithm such as CART (Classification And Regression 
+	Trees)~\cite{Breiman1984} is a non-parametric decision tree, similar to 
+	\textbf{C4.5}~\cite{Quinlan1993}. 
+
+	CART constructs a two branch bifurcation of the most discriminating 
+	attribute, based on the Gini index. It can generate either classification or 
+	regression trees - depends on the variable (categorical or numeric, 
+	respectively). The implementation available in 
+	\texttt{scikit-learn}~\cite{scikit-learn}
+	\footnote{\url{https://scikit-learn.org/stable/modules/tree.html}} is an 
+	optimised version of this algorithm, although it does not support 
+	categorical variables.
     
-    The implementation available in ~\cite{scikit-learn} is an optimised 
-    version of this algorithm, although it does not support categorical 
-    variables.
-    
-    \item [Nearest Centroid] classifier\cite{conformal2014}, or \textbf{Nearest 
-    Prototype} classifier, or \textbf{Rocchio classifier} for its similarity to 
-    an algorithm with the same name (see Eq.\ref{eq:rocchio}). 
+    \item [Nearest Centroid] classifier\cite{conformal2014},  \textbf{Nearest 
+	Prototype} classifier, or \textbf{Rocchio classifier} for its similarity to 
+	an algorithm with the same name (see Eq.\ref{eq:rocchio}). 
     
     \begin{equation}\label{eq:rocchio}
         \overrightarrow{Q_{m}} =  (a \cdot \overrightarrow{Q_{o}}) + (b \cdot 
@@ -277,50 +279,35 @@ experiments carried out use the following algorithms:
     \end{equation}
     
     The labels of a given sample are assigned by evaluating the classes of 
-    training samples whose mean is closest to the evaluated point. The training 
-    procedure, given a labeled training set ${(\overrightarrow{x_{1}}, y_{1}), 
-    \ldots,  (\overrightarrow{x_{n}}, y_{n})}$ with class labels $y_{i} \in Y$, 
-    compute the per-class centroid with Eq.~\ref{eq:knntrain}.
+	training samples whose mean is closest to the evaluated point. The training 
+	procedure, given a labeled training set ${(\overrightarrow{x_{1}}, y_{1}), 
+	\ldots,  (\overrightarrow{x_{n}}, y_{n})}$ with class labels $y_{i} \in Y$, compute the per-class centroid with Eq.~\ref{eq:knntrain}.
     
     \begin{equation}\label{eq:knntrain}
         \overrightarrow{\mu _{l}} = \frac{1}{\lvert C_{l} \rvert} \sum_{i \in 
         C_{l}} \overrightarrow{x_{i}}
     \end{equation}
     
-    Where $C_{l}$ is the set of indices of samples belonging to class $l \in Y$.
-    The prediction functions, takes the class assigned to an observation 
-    $\overrightarrow{x}$ is Eq.~\ref{eq:knnpred}.
+    \noindent where $C_{l}$ is the set of indices of samples belonging to class 
+	$l \in Y$.  The prediction functions, takes the class assigned to an 
+	observation $\overrightarrow{x}$ is Eq.~\ref{eq:knnpred}.
     
     \begin{equation}\label{eq:knnpred}
-        \overrightarrow{y} = argmin_{l \in Y} \lvert\lvert \overrightarrow{
-        \mu _{l}} - \overrightarrow{x} \rvert\rvert
+        \overrightarrow{y} = argmin_{l \in Y} \lvert\lvert \overrightarrow{\mu _{l}} - \overrightarrow{x} \rvert\rvert
     \end{equation}
 
 \end{description}
-
-%Classifiers can be adapted to deal with  imbalance in different ways.
-%In this work, we have used the following base learners implemented in Weka:
-% C4.5 (implemented as J48) - weights yes
-% JRip weights - yes
-% Naive Bayes - weithgts yes
-% IB weights yes
-% logistic regression weights yes
-% NN weights yes
-% simpleCART -no
-% SMO weights - yes
-%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Evaluation Metrics}\label{sec:ev-metrics}
 
 Part of the process of applying a classification algorithm is to measure the 
-success and the results of the training. In order to do it, some rates can be 
-calculated out of the testing to the trained classifier. Here is where the 
-Confusion Matrix comes at hand.
-
-The Confusion Matrix (see Table~\ref{tab:conf-matrix}) allows us to summarize 
-the performance of a given classification algorithm, it is also the foundation 
-of many of the performance metrics used in classification by:
+success and the results of the training. In order to do it, some metrics can be 
+calculated out of the testing to the trained classifier. Here is where the
+Confusion Matrix comes at hand. The Confusion Matrix (see 
+Table~\ref{tab:conf-matrix}) allows us to summarize the performance of a given 
+classification algorithm, it is also the foundation of many of the performance 
+metrics used in classification by:
 
 % --> Confusion Matrix
 \begin{table}[h!]
@@ -352,19 +339,17 @@ of many of the performance metrics used in classification by:
 \end{description} 
 
 These specifications indicate that the input data should have a binary target: 
-one value that can be classified as \textit{positive} and a second value that
+one value that can be classified as \textit{positive} and a second value that 
 can be classified as negative. From this statistical classification
 \footnote{Also know as error matrix.}, many performance measures can be 
-calculated.
-
-Some of the most widely used metrics, and the ones calculated in this paper are 
-the ones explained next.
+calculated. Some of the most widely used metrics, and the ones used in this 
+paper are explained next.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Precision}    
  
 Also know as Positive Predictive Value (PPV). It is the relation 
-between the \textit{true positives} calculated and the overall positives
+between the \textit{true positives} calculated and the overall positives 
 detected by the classification algorithm (see Eq.~\ref{eq:ppv}).
  
 \begin{equation}\label{eq:ppv}
@@ -375,7 +360,7 @@ detected by the classification algorithm (see Eq.~\ref{eq:ppv}).
 \subsection{Recall} 
 
 Also known as sensitivity, hit rate, or True Positive 
-Rate (TPR). It stands for the relation between the \textit{true positives}
+Rate (TPR). It stands for the relation between the \textit{true positives} 
 calculated and the real number of positives (see Eq.~\ref{eq:tpr}).
 
 \begin{equation}\label{eq:tpr}
@@ -409,14 +394,14 @@ handy for imbalanced datasets. Its formula is represented by the mean of
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{F-Measure} 
  
-Also known as $F_1$, or \textit{S\o rensen-Dice coefficient} (independently
-developed by Thorvald S\o rensen~\cite{sorensen1948} and Lee Raymond 
-Dice~\cite{dice1945}). It is the harmonic mean of precision and sensitivity, 
-the two previous measures, which measures accuracy (see Eq.~\ref{eq:f1}). It is 
-twice the relation of the multiplication between \textit{recall} and 
-\textit{precision} and their addition. It is commonly used in highly imbalanced 
-datasets. There are some criticism rewarding this measure, as it does not take 
-into account the \textit{True Negative} (\textit{TN}) cases.
+Also known as $F_1$, or \textit{S\o rensen-Dice coefficient} (independently 
+developed by S\o rensen~\cite{sorensen1948} and Dice~\cite{dice1945}) is the 
+harmonic mean of precision and sensitivity, the two previous measures, which 
+measures accuracy (see Eq.~\ref{eq:f1}). It is twice the relation of the 
+multiplication between \textit{recall} and \textit{precision} and their 
+addition. It is commonly used in highly imbalanced datasets but there are also 
+some criticisms as it does not take into account the \textit{True Negative} 
+(\textit{TN}) cases.
 
 \begin{equation}\label{eq:f1}
     F_1 = 2 \cdot \frac{PPV \cdot TPR}{PPV + TPR} = \frac{2 \cdot TP}{2 \cdot TP + FP + FN}
@@ -426,30 +411,22 @@ into account the \textit{True Negative} (\textit{TN}) cases.
 \subsection{MCC} 
 
 The Matthews Correlation Coefficient (MCC)~\cite{Matthews1975} or \textit{phi} 
-coefficient, a performance metric (see Eq.~\ref{eq:mcc}) that measures the 
-quality of a binary classification robust to the imbalance problem. Its range 
-values are  between -1 and +1, where -1 represents complete inconsistency 
-(disagreement), 0 indicates that the prediction is no better than a random 
-prediction; and +1 would be a perfect prediction.  
+coefficient measures the quality of a binary classification robust to the 
+imbalance problem (Eq.~\ref{eq:mcc}). Its range values are between -1 and +1, 
+where -1 represents complete inconsistency (disagreement), 0 indicates that the 
+prediction is no better than a random prediction; and +1 would be a perfect 
+prediction.  
 
 \begin{equation}\label{eq:mcc}
     MCC = \frac{TP \cdot TN - FP \cdot FN}{\sqrt{(TP + FP)(TP + FN)(TN + FP)(TN + FN)}}
-\end{equation}
-
-Other measures cannot be used when data is highly imbalanced, like 
-\textit{accuracy} (\textit{Acc}) (defined by Eq.~\ref{eq:accuracy}), as it does 
-not take into account the number of labels of different classes.
-
-\begin{equation}\label{eq:accuracy}
-    Acc = \frac{TP + TN}{TP + TN + FP + FN}
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Receiver Operating Characteristic Curve}\label{sec:roc}
 
 The Receiver Operating Characteristic (ROC)\cite{Fawcett2006} Curve represents 
-graphically the True Positive Rate (TPR) versus the False Positive Rate (FPR) 
-as shown in Figure~\ref{fig:roc}.
+graphically the True Positive Rate (TPR) versus the False Positive Rate (FPR) as 
+shown in Figure~\ref{fig:roc}.
 
 \begin{figure}
 \centering
@@ -458,7 +435,7 @@ as shown in Figure~\ref{fig:roc}.
 \label{fig:roc}
 \end{figure}
 
-Once the curve is plotted, the more the curve gets similar to a slope of
+Once the curve is plotted, the more the curve gets similar to a slope of 
 $TPR = FPR$ the more imbalance that can be found in the dataset. It provides
 graphical visualization of the results. 
 
@@ -471,9 +448,17 @@ An approximation to the function can be calculated with Eq~\ref{eq:auc}.
     AUC = \frac{1 + TP_{r} - FP_{r}}{2}
 \end{equation}
 
-Three unbiased metrics, i.e., AUC, F-score (\cite{sorensen1948}, 
-\cite{dice1945}), Matthews Correlation Coefficient (MCC - \cite{Matthews1975}), 
-are used to evaluate the performance on imbalanced datasets.
+
+Typically, three unbiased metrics, i.e., AUC, F-score 
+(\cite{sorensen1948,dice1945}), Matthews Correlation Coefficient 
+(MCC - \cite{Matthews1975}), are used to evaluate the performance on imbalanced 
+datasets. Other measures cannot be used when data is highly imbalanced, like 
+\textit{accuracy} (\textit{Acc}) (defined by Eq.~\ref{eq:accuracy}), as it does 
+not take into account the number of labels of different classes.
+
+\begin{equation}\label{eq:accuracy}
+    Acc = \frac{TP + TN}{TP + TN + FP + FN}
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results and discussion}
@@ -482,46 +467,42 @@ are used to evaluate the performance on imbalanced datasets.
 
 \subsection{Methodology}
 
-To answer the RQ in Section \ref{sec:aim-obj}, we run several experiments.
-First, we analyze the complexity metrics (see Section~\ref{sec:ecol}) from all 
-selected datasets (see Section~\ref{sec:datasets}). Then, we retrieve some
-analytical metrics (see Section~\ref{sec:ev-metrics}), applying K-fold Cross
+To answer the research questions stated in Section \ref{sec:aim-obj}, we run 
+several experiments. First, we analyze the complexity metrics (see 
+Section~\ref{sec:ecol}) from all selected datasets (see 
+Section~\ref{sec:datasets}). Then, we retrieve some analytical metrics (see 
+Section~\ref{sec:ev-metrics}), applying $K$-fold Cross
 Validation to those datasets. Finally, we repeat the process applying some 
-under/oversampling techniques to the K-Fold process (see 
-Sections~\ref{sec:undersampling} and \ref{sec:oversampling}, respectively).
+under/oversampling techniques to the $K$-Fold process (see 
+Sections~\ref{sec:undersampling} and~\ref{sec:oversampling}, respectively).
 
-As the final objective is to see how complexity metrics affect classification -
-and therefore the analytical metrics, a final section is going to summarize
-the results obtained and the conclusions drawn out of those measures and answer
-Research Questions 1 to 4.
+As the final aim is to see how complexity metrics affect classification and 
+therefore the analytical metrics, a final section is going to summarize the 
+results obtained and the conclusions drawn out of those measures and answer the 
+research questions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Metrics Analysis}
 
 As it has been mentioned in \textit{Data Complexity Metrics} (see 
 Section ~\ref{sec:ecol}), the software package to calculate them is 
-available in R, ECoL\footnote{\url{https://github.com/lpfgarcia/ECoL/}}. 
-Therefore, it was  necessary to call it from the Python environment. 
-In order to do so, the package RServe, a client server implementation 
-for R workspace to execute functions from other environments like 
-Python, was used. In other words, this is a connector that allow us 
-to execute the ECoL complexity metrics functions.
+available in R, 
+\texttt{ECoL}\footnote{\url{https://github.com/lpfgarcia/ECoL/}}. Therefore, it
+was necessary to call it from the Python environment. In order to do so, the 
+package \texttt{RServe}, a client server implementation for R workspace to 
+execute functions from other environments like Python, was used. In other words, 
+this is a connector that allow us to execute the \texttt{ECoL} complexity
+metrics functions. The source code regarding this connector can be found in the 
+Appendix~\ref{chp:pythoncode}, Section~\ref{sec:rconnect}.
 
-The code regarding this script can be found in the Appendix 
-\ref{chp:pythoncode}, section \ref{sec:rconnect}.
-
-Regarding the experiment's content and objective, it has been 
-implemented an script that requests the complexity metrics of a 
-dataset and then displays its values on graphs comparing the results. 
-
-The structure of the script tries to find and compare the complexity 
-metrics obtained from different datasets, to see if there is a 
-certain relation between metrics.
-
-There has been create a script (see simplification of the algorithm in
-Algorithm~\ref{alg:complexmetrics}) that connects to ECoL library in R
-and returns the complexity metrics of a certain dataset (see full 
-implementation of the script in Appendix~\ref{chp:pythoncode}, 
+Regarding the experiment's content and objective, it was implemented a Python 
+script that requests the complexity metrics of a dataset and then displays its 
+values on graphs comparing the results. The structure of the script tries to 
+find and compare the complexity metrics obtained from different datasets to see 
+if there is a certain relation between metrics. To do so, a script was developed 
+(see Algorithm~\ref{alg:complexmetrics}) to connect Python to the ECoL library 
+in R and returns the complexity metrics of a certain dataset (see its full 
+implementation in Appendix~\ref{chp:pythoncode}, 
 Section~\ref{sec:exp-kfold-code}).
 
 \begin{breakablealgorithm}
@@ -545,22 +526,21 @@ Section~\ref{sec:exp-kfold-code}).
     \end{algorithmic}
 \end{breakablealgorithm}
 
-The results are also stored in CSV files, which can be represented
-as tables \ref{tab:complMetricsWholeDatasets_PROMISE} and
-\ref{tab:complMetricsWholeDatasets_PROMISE2}.
+The results are also stored in CSV files, which are represented
+as Tables~\ref{tab:complMetricsWholeDatasets_PROMISE} 
+and~\ref{tab:complMetricsWholeDatasets_PROMISE2}.
 
 The experiment has been repeated for two independents sets of 
 datasets (see Section~\ref{sec:datasets} for more details regarding
-the datasets and their content). The first experiment's results are
-summarized in the following table (see 
-table~\ref{tab:complMetricsWholeDatasets_PROMISE}), whereas the second
-experiment, regarding the Hadoop datasets is represented in 
-table~\ref{tab:complMetricsWholeDatasets_PROMISE2}.
+the datasets and their content). The first experiment results are
+summarized in Table~\ref{tab:complMetricsWholeDatasets_PROMISE}, whereas the 
+second experiment, regarding the Hadoop datasets is shown in 
+Table~\ref{tab:complMetricsWholeDatasets_PROMISE2}.
 
-The obtained results are showed in the following figures: 
+The obtained results are also showed in the following Figures: 
 (\ref{fig:balance}) balance, (\ref{fig:correlation}) correlation, 
-(\ref{fig:dimensionality}) dimensionality, (\ref{fig:linearity}) linearity,
-(\ref{fig:neighborhood}) neighborhood, (\ref{fig:network}) network,
+(\ref{fig:dimensionality}) dimensionality, (\ref{fig:linearity}) linearity, 
+(\ref{fig:neighborhood}) neighborhood, (\ref{fig:network}) network, 
 (\ref{fig:overlap}) overlap, and (\ref{fig:smoothness}) smoothness.
 
 %%%%%%%%%%
@@ -794,43 +774,39 @@ Further results are compared and discussed in Section~\ref{sec:compresults}.
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{K-fold on Metrics Analysis}\label{sec:exp-kfold}
+\subsection{Cross Validation Analysis}\label{sec:exp-kfold}
 
-This experiment tries to find the impact of applying the K-fold 
+This experiment tries to find the impact of applying the $K$-fold 
 Cross-Validation. It is a widely extended technique in data science that brings 
-a solution to the problem of performing testing to a data set with no separate
-training data - a given data set should not be used for both training and 
-testing for the classifier, instead data can be divided so a portion is used
-for training and another separate portion for testing/validation. Cross 
-validation allows to estimate the performance of the model trained by the whole 
-dataset dividing it into folds of two types:
+a solution to the problem of performing testing to a data set with no separate 
+training data - the same instances in a given dataset should not be used for 
+both training and testing a classifier at the same time, instead data can be 
+divided so a portion is used for training and another separate portion for 
+testing/validation. Cross validation allows to estimate the performance of the 
+model trained by the whole dataset dividing it into $k$ folds as follows:
 
-\begin{description}
-    \item [Training set] Known data by the classifier, and used to train it. It 
-    represents $k - 1 / k$ parts of the original set.
-    \item [Testing set] Also known as validation set. Unknown data for the 
-    algorithm. Used to test the performance of the trained classifier. It 
-    usually is $1 / k$ of the original dataset.
-\end{description}
+\begin{itemize}
+    \item Training set which is known data by the classifier, and used to train 
+	it. It represents $k-1/k$ parts of the original set.
+    \item Testing set, also known as validation set which corresponds to unseen 
+	data for trained classifier used to test its performance. It usually is 
+	$1/k$ of the original dataset.
+\end{itemize}
 
-The K-fold algorithm has a total of $k$ iterations, same as the number of folds 
-(parts/divisions) of the dataset. On each iteration, the \textit{testing 
-set} is rotated to another unused fold\footnote{The folds do not change 
-throughout the cross validation process.} of the data - no testing set is 
-repeated, which means that each fold is used once for \textit{testing} 
-purposes. 
+Then, the average of carrying out $k$ iterations, same as the number of folds 
+(parts/divisions) of the dataset, is calculated. On each iteration, the 
+\textit{testing set} is rotated to another unused fold\footnote{The data in the 
+different folds does not change throughout the cross validation process.} of the 
+data - no testing set is repeated, which means that each fold is used only once 
+for\textit{testing} purposes. 
 
-After all iterations, the performance of the classifier that would be obtained 
-by training with the whole dataset is estimated by doing the mean of the
-performances on each iteration of the algorithm. 
-
-The most common values for $k$ (folds) used in data science are 5 and 10. This 
+The most common values for $k$ (folds) used in data science are 5 and 10. For 
 this experiment, $k$ has been selected as $k=5$, as a common value of $k$ was 
-needed for all experiments and some of the datasets did not have enough 
-samples for a larger value of $k$.
+needed for all experiments and some of the datasets did not have enough samples 
+for a larger value of $k$.
 
-The algorithm that analyzes the performance of each fold and the calculates 
-the mean performance can be simplified as the one explained in the 
+The algorithm that analyses the performance of each fold and the calculates the 
+mean performance can be simplified as the one explained in the 
 Algorithm~\ref{alg:kfold}.
 
 \begin{breakablealgorithm}
@@ -857,29 +833,21 @@ Algorithm~\ref{alg:kfold}.
     \end{algorithmic}
 \end{breakablealgorithm}
 
-The real script used for this experiment can be found in 
+The Python script used for this experiment can be found in 
 Appendix~\ref{chp:pythoncode}, Section~\ref{sec:exp-kfold-code}. It basically
-separates a certain dataset into folds and calculates the analysis metrics
-for each fold, to later on compute the mean value of those metrics for the
-entire dataset.
+separates a dataset into folds and calculates the performance metrics for each 
+fold, to later on compute the mean value of those metrics for the entire dataset.
 
-Thanks to the results of the results of the classifiers for each fold, first,
-the \textit{confusion matrix} is obtained and thereafter, some other metrics 
-are calculated (such as recall, MCC, etc.). Those metrics are then compared 
-using a table like tab~\ref{tab:kfold} or \ref{tab:kfold2}, for each specific
-dataset, to see the full extent of the comparison refer to 
-Section~\ref{sec:compresults}.
-
-Only two tables of the aforementioned resulting dataset tables have been 
-included in this document, as an example of the results obtained through the
-experiment.
-
-The first case is the table obtained from Apache dataset (see 
-Table~\ref{tab:kfold}).
+With the \textit{confusion matrix} other metrics are calculated such as 
+$recall$, $MCC$, etc. Those metrics are then compared in Tables~\ref{tab:kfold} 
+and~\ref{tab:kfold2}, for each specific dataset (to see the full extent of the 
+comparison we refer to Section~\ref{sec:compresults}. For the sake of 
+simplicity, only two tables of the aforementioned resulting datasets. 
+Table~\ref{tab:kfold} shows the results obtained from Apache dataset.
 
 \begin{center}
 \begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
-\caption{K-Fold Metrics Tree Apache}\label{tab:kfold} \\
+\caption{Cross-Validation Results --- Apache Dataset}\label{tab:kfold} \\
 
 \hline
 \textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
@@ -932,6 +900,7 @@ Table~\ref{tab:kfold}).
 & \textbf{Nearest Centroid} &
 0.4545 & 0.7143 & 0.1935 & 0.7604 & 0.5556 & 0.4451 & 0.7604 \\
 \hline
+\hline
 % Mean
 \multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
 0.4132 & 0.4294 & 0.3323 & 0.5485 & 0.2926 & 0.0623 & 0.5485 \\
@@ -943,12 +912,12 @@ Table~\ref{tab:kfold}).
 \end{longtable}
 \end{center}
 
-The second example is the table obtained on the experiment performed over the 
-Hadoop (v0.8) dataset (see Table~\ref{tab:kfold2}).
+The second example shown in Table~\ref{tab:kfold2} was obtained on the 
+experiment performed over the Hadoop (v0.8) dataset.
 
 \begin{center}
 \begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
-\caption{K-Fold Metrics Tree Hadoop 0.8}\label{tab:kfold2} \\
+\caption{Cross-Validation Results ---  Hadoop 0.8 Dataset}\label{tab:kfold2} \\
 
 \hline
 \textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
@@ -1001,6 +970,7 @@ Hadoop (v0.8) dataset (see Table~\ref{tab:kfold2}).
 & \textbf{Nearest Centroid} &
 0.0000 & 0.0000 & 0.0000 & 0.5000 & 0.0000 & 0.0000 & 0.5000 \\
 \hline
+\hline
 % Mean
 \multirow{3}{*}{\textbf{Mean}} & \textbf{Naive Bayes} & 
 0.26667 & 0.0750 & 0.0474 & 0.5138 & 0.1016 & 0.0932 & 0.5138 \\
@@ -1012,58 +982,47 @@ Hadoop (v0.8) dataset (see Table~\ref{tab:kfold2}).
 \end{longtable}
 \end{center}
 
-The inner results of each fold are not evaluated when analyzing the results
-of the experiments, but that data could be used to understand how does
-imbalance exactly affect classification. The objective evaluated in this 
+The inner results of each fold are not evaluated when analyzing the results of 
+the experiments, but that data could be used to understand how data metrics 
+(including imbalance) affect classification. The objective evaluated in this 
 paper is to see if the metrics obtained for each dataset have any relation with 
 the performance of the classifiers. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Filters affect Classification}
+\subsection{Imbalance Experimental Work}
 
-After experimenting with K-folding, it is time to see if filters applied to
-the dataset have any effect on the quality of the trained classifier. In this 
-case it is carried out by applying imbalance filters to the folds in the
-datasets (see Section~\ref{sec:imbtechniques} for more information on 
-imbalance filters).
+After experimenting with cross-validation, we now focus on if filters applied 
+to the dataset have any effect on the quality of the trained classifier. In this
+case, it is carried out by applying imbalance filters to the folds in the 
+datasets (see Section~\ref{sec:imbtechniques} for more information on imbalance 
+filters).
 
-The main target is, as the avid reader can guess, imbalanced datasets and how
-filters that affect imbalance also affect the performance and other metrics of 
-classifiers - results are going to be compared on Section~\ref{sec:compresults}.
-
-Out of all the aforementioned techniques (\ref{sec:imbtechniques}) available 
-for imbalanced datasets, only the two following techniques are going to be used 
-in the experiments:
+Out of all the aforementioned techniques (\ref{sec:imbtechniques}) available for 
+imbalanced datasets, the following techniques are going to be used in the 
+experiments:
 
 \begin{description}
     \item [Undersampling] Removing samples from majority class.
     \item [Oversampling] Creating new samples in the minority class.
 \end{description}
 
-These techniques have been selected as they are more than enough to see if
-classifiers are affected by them. These two techniques have been used in two 
-separate experiments.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Undersampling and $K$-fold on Classification}
+\subsubsection{Undersampling with Cross Validation}
 \label{sec:kfoldunder}
 
 For this experiment, one undersampling algorithm is applied 
-(\ref{nearmiss}) to see how folds are affected by removing majority class
-samples, and therefore, looking at how it impacts the classification algorithm 
-being used is . 
+(\ref{nearmiss}) to see how folds are affected by removing majority class 
+samples, and therefore, looking at how it impacts the classification algorithm. 
 
-The undersampling technique is not done on the whole dataset. Actually, the
-folds are the ones affected by this algorithm. That way, instead of removing the
-imbalance in the whole dataset, it is removed in each fold as necessary,
-as some folds might have different imbalance level: what might be the majority 
-class in the whole dataset can be the minority class of a certain fold.
+The undersampling technique is not done on the whole dataset in advance, only 
+the training folds are the ones that the undersampling algorithm is applied. 
 
-The value selected for K-fold Cross Validation is $k=5$. A simplification
-of the procedure followed by this experiment can be found in the Algorithm~\ref{alg:kfoldunder}.
+The $k$ value chosen for cross validation is $k=5$. A simplification
+of the procedure followed by this experiment can be found in the 
+Algorithm~\ref{alg:kfoldunder}.
 
 \begin{breakablealgorithm}
-    \caption{Undersampling and K-fold on classification performance}
+    \caption{Undersampling with Cross-Validation}
     \label{alg:kfoldunder}
     \begin{algorithmic}[1]
         \Require $\mathcal{D}$ dataset
@@ -1095,23 +1054,22 @@ of the procedure followed by this experiment can be found in the Algorithm~\ref{
     \end{algorithmic}
 \end{breakablealgorithm}
 
-Just as before, more than one classification algorithm has been used to measure
-performance of the alterations done on the dataset - (1) Naive Bayes 
-(Gaussian); (2) Decision Tree; and (3) kNN Nearest Centroid.
+Similarly to the previous experiment, the following classification algorithms 
+were used to measure performance of the alterations done on the dataset, i.e., 
+(1) Naive Bayes (Gaussian), (2) Decision Tree and (3) kNN Nearest Centroid.
 
 The experiment creates the same tables obtained in 
 experiment~\ref{sec:exp-kfold}, that is why sharing all the resulting tables of 
-this experiment would be unnecessary - the results evaluated in this paper
-can be found in Section~\ref{sec:compresults}. That is why only two of them 
-have been included into this document. The Apache dataset experiment (see 
+this experiment would be unnecessary - the results evaluated here can be found 
+in Section~\ref{sec:compresults}. That is why only two of them have been 
+included into this dissertation. The Apache dataset experiment (see 
 Table~\ref{tab:kfoldunder}).
 
 \begin{center}
 \begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
-\caption{K-Fold Metrics with Undersampling Results Apache}
+\caption{Undersampling with Cross-validation Results --- Apache dataset}
 \label{tab:kfoldunder} 
 \\
-
 \hline
 \textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
 \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
@@ -1183,8 +1141,7 @@ experiment (see Table~\ref{tab:kfoldunder2}).
 
 \begin{center}
 \begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
-\caption{K-Fold Metrics with Undersampling Results Hadoop 0.8}\label{tab:kfoldunder2} \\
-
+\caption{Cross-validation with Undersampling Results --- Hadoop 0.8}\label{tab:kfoldunder2} \\
 \hline
 \textbf{\emph{Fold}} & \textbf{\emph{Function}} & 
 \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & 
@@ -1251,28 +1208,27 @@ experiment (see Table~\ref{tab:kfoldunder2}).
 \end{longtable}
 \end{center}
 
-As it has been mentioned in Section~\ref{nearmiss}, there are several versions
-of \textit{Near Miss} algorithm. For this experiment it has been used 
-\textit{version 2}. This undersampling algorithm selects the majority class
-samples with the least average distance to the 3 farthest minority class 
-samples.
+As it has been mentioned in Section~\ref{nearmiss}, there are several versions 
+of \textit{Near Miss} algorithm. For this experiment it was used \textit{version 
+2}. This undersampling algorithm selects the majority class samples with the 
+least average distance to the 3 farthest minority class samples.
 
 The analysis of the metrics obtained are in Section~\ref{sec:compresults}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Oversampling and K-fold on Classification}
+\subsubsection{Oversampling with Cross Validation}
 
 In this experiment, similarly to Section~\ref{sec:kfoldunder}, an imbalance 
-filter is included to the K-fold Cross Validation process. In this case, the 
-oversampling technique is implemented and is later on compared to other 
-experiment results (see Section~\ref{sec:compresults}).
+filter is used. In this case, the oversampling technique is implemented and is 
+later on compared to other experiment results (see 
+Section~\ref{sec:compresults}).
 
-The technique has been applied to the different folds of the dataset, not to 
-the entire data. Once again, the dataset is divided into $k=5$ folds. 
+The technique has been applied to the different folds of the dataset, not to the
+entire data. Once again, the dataset is divided into $k=5$ folds. 
 
-The logic of the experiment is summarized in the next script (see 
-Algorithm~\ref{alg:kfoldover}). The difference with the
-undersampling Algorithm~\ref{alg:kfoldunder} is that uses SMOTE technique (see 
+The logic of the Python code experiment is summarized in 
+Algorithm~\ref{alg:kfoldover}. The difference with the undersampling 
+Algorithm~\ref{alg:kfoldunder} is that uses the SMOTE technique (see 
 Section~\ref{smote}) instead of \textit{Near Miss} undersampling technique.
 
 \begin{breakablealgorithm}
@@ -1303,13 +1259,12 @@ Section~\ref{smote}) instead of \textit{Near Miss} undersampling technique.
 The classifiers used for this experiment are - (1) Naive Bayes (Gaussian); 
 (2) Decision Tree; and (3) kNN Nearest Centroid.
 
-Not all the resulting tables can be shown, so only two examples have been 
-included. The first one is the result on the Apache dataset (see 
-Table~\ref{tab:kfoldover-apache}).
+Next we show two of the results obtained, fhe first one is the result on the 
+Apache dataset (see Table~\ref{tab:kfoldover-apache}).
 
 \begin{center}
 \begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
-\caption{K-Fold Metrics with Oversampling Results Apache}
+\caption{Oversampling with Cross Validation Results --- Apache dataset}
 \label{tab:kfoldover-apache} 
 \\
 
@@ -1385,7 +1340,7 @@ Table~\ref{tab:kfoldover-hadoop}).
 
 \begin{center}
 \begin{longtable}{ | r  l | c | c | c | c | c | c | c | }
-\caption{K-Fold Metrics with Oversampling Results Hadoop 0.8}\label{tab:kfoldover-hadoop} \\
+\caption{Oversampling with Cross-Validation Results --- Hadoop 0.8 dataset}\label{tab:kfoldover-hadoop} \\
 
 \hline
 \textbf{\emph{Fold}} & \textbf{\emph{Function}} & \emph{Precision} & \emph{Recall}  & \emph{Fall Out} & \emph{Balanced} & \emph{F1} & \emph{MCC} & \emph{AUC} \\
@@ -1451,41 +1406,41 @@ Table~\ref{tab:kfoldover-hadoop}).
 The analysis of the metrics obtained are in Section~\ref{sec:compresults}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Compare Results}\label{sec:compresults}
+\subsection{Comparison of the Results and discussion}\label{sec:compresults}
 
-In this part of the paper, we are going to analyze the results coming from the
-previous experiments. These are displayed in tables \ref{tab:all-metrics}, 
-\ref{tab:all-metrics2} and \ref{tab:all-metrics3}. 
+In this section, we are going to analyze the results coming from the
+previous experiments. These are shown in Tables~\ref{tab:all-metrics}, 
+\ref{tab:all-metrics2} and~\ref{tab:all-metrics3}. 
 
-To answer RQ1 and RQ2 (\ref{q:rq1} and \ref{q:rq2}, respectively) we need to 
-observe, for example, the values from \textit{overlapping}, we assume that 
-there is a certain relation with the classification performance. For most cases 
-in our experimentation, the higher the overlapping rate, the less efficient the 
-classifier becomes. Of course, this assumption is not backed up by any 
-statistical experiment on the datasets and/or the classifiers, but it looking 
-at the results it looks right at first sight.
+To answer RQ1 and RQ2 (see Section~\ref{q:rq1} and \ref{q:rq2}, respectively) we 
+need to observe, for example, the values from \textit{overlapping}, we assume 
+that there is a certain relation with the classification performance. For most 
+cases in our experimentation, the higher the overlapping rate, the less 
+efficient the classifier becomes. Of course, this assumption is not backed up by
+any statistical experiment on the datasets and/or the classifiers, but it 
+looking at the results it looks right at first sight.
 
 For example, looking at the \textit{overlapping} measures, when 
 \textit{overlapping F1} is higher than 0.90, almost none of the classifiers is 
 able to surpass 0.5 in \textit{precision} score, something similar happens with 
 the \textit{recall} an \textit{fall-out} scores (all three measures indicate on 
-a relative value how many input samples are correctly predicted). It makes 
-sense once the reader realizes that the more interlaced the samples are (the 
-more \textit{overlapping}), it should be harder for a classifier to identify 
-what data belongs to each class (RQ2 - see \ref{q:rq2}).
+a relative value how many input samples are correctly predicted). It makes sense 
+once the reader realizes that the more interlaced the samples are (the more 
+\textit{overlapping}), it should be harder for a classifier to identify what 
+data belongs to each class (RQ2 - see \ref{q:rq2}).
 
 In a similar way, it \textit{linearity} measures (RQ1 - see \ref{q:rq1}) are 
-directly related to the performance of the classification algorithms. Having 
+directly related to the performance of the classification algorithms. Having
 high \textit{overlapping} measures means that the \textit{linearity} should be 
 smaller (it is harder to separate data using a linear function if data is 
 interlaced) - RQ2 (see \ref{q:rq2}). Therefore, the higher the 
 \textit{linearity} measures obtained, the higher the performance should be. No 
-examples of this behavior can be shown, as all the selected datasets seem to 
+examples of this behavior can be shown, as all the selected datasets seem to
 have high \textit{overlapping} values.
 
 A third complexity metric that should be taken into account, regarding 
-classifiers performance, is \textit{balance} - (RQ1 and RQ3, \ref{q:rq1} and
-\ref{q:rq3}, respectively). Its measures try to approximate the level of 
+classifiers performance, is \textit{balance} - (RQ1 and RQ3, \ref{q:rq1} 
+and~\ref{q:rq3}, respectively). Its measures try to approximate the level of 
 imbalance of a certain class. Therefore, the higher the measures' values, the 
 greater should be the gap between the number of samples from the majority and 
 minority class (all the datasets work with binary classes).
@@ -1498,31 +1453,30 @@ be translated as, the performance on certain classifiers might depend on the
 imbalance of a certain dataset (RQ2 - see \ref{q:rq2}).
 
 Taking a look at \textit{Balanced Accuracy} measure (useful for imbalanced 
-datasets, like the ones used for the experiments on this paper), it can be 
-observed that most of the classifiers do not behave as they should in either
-the positive or negative prediction. In example, all of the hadoop datasets,
-where the imbalance ratio (\textit{balance} measures) is not ideal, and the
-overlapping is too high. 
+datasets, it can be observed that most of the classifiers do not behave as 
+they should in either the positive or negative prediction. In example, all of 
+the Hadoop datasets, where the imbalance ratio (\textit{balance} measures) is 
+not ideal, and the overlapping is too high. 
 
-Therefore, \textit{MCC}, as a measure to see the quality of a binary classifier
+Therefore, \textit{MCC}, as a measure to see the quality of a binary classifier 
 should also be low - just like in hadoop datasets.
 
 As for this last observation, it could be assumed that filters that would reduce
 imbalance, should also be able to increase the performance of the classifiers.
 
-After some experimentation regarding this matter, no clear improvements have
-been noticed in any of the analytical measures. Furthermore, undersampling
-seems not to be a good technique when the number of samples is too low, as the
-number of samples in the resulting training dataset is not enough to obtain a
+After some experimentation regarding this matter, no clear improvements have 
+been noticed in any of the analytical measures. Furthermore, undersampling 
+seems not to be a good technique when the number of samples is too low, as the 
+number of samples in the resulting training dataset is not enough to obtain a 
 good classifier. In some cases, it even reduces the performance.
 
-After using SMOTE oversampling technique, the \textit{Balanced Accuracy} metric
+After using SMOTE oversampling technique, the \textit{Balanced Accuracy} metric 
 seems to indicate that the classifier identified slightly better some of the 
-testing data samples, but the resulting classifier still does not meet the
+testing data samples, but the resulting classifier still does not meet the 
 desired quality (\textit{MCC}).
 
-But, overall, the techniques applied do not seem to fix perfectly the problems
-arose from either imbalance or overlapped datasets. This topic is going to be
+But, overall, the techniques applied do not seem to fix perfectly the problems 
+arose from either imbalance or overlapped datasets. This topic is going to be 
 further discussed in Section~\ref{sec:conclusions}, as well as some other 
 remarks about the selected classifiers and possible further experimentation on
 this topic.
@@ -1531,7 +1485,7 @@ On trying to answer the final RQ, \textit{Do complexity metrics tell us
 something about the quality of the dataset?} (see \ref{q:rq4}), we can assume 
 (looking at the results), they do. A dataset with bad quality could be 
 considered one that has high overlapping, imbalanced classes, etc. As the 
-results seem to indicate a relation between those values and the performance of
+results seem to indicate a relation between those values and the performance of 
 the obtained classifier - as the analytical metrics tell us.
 
 \lhead{}
@@ -1539,4 +1493,3 @@ the obtained classifier - as the analytical metrics tell us.
 \input{chapters/tables/bigtable-page1}
 \input{chapters/tables/bigtable-page2}
 \input{chapters/tables/bigtable-page3}
-

@@ -52,6 +52,8 @@ if __name__ == '__main__':
 
             filename = d + '-k' + str(k)
 
+            print(((y_train == 0).sum(), (y_train == 1).sum()))
+
             # Train NN
             print('---> Naive Bayes')
             clf   = GaussianNB() 
